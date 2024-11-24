@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     libicu-dev \
     curl \
-    && docker-php-ext-install pdo pdo_mysql intl ctype iconv zip mbstring
+    && docker-php-ext-install pdo pdo_mysql 
 
 # Installer Symfony CLI (optionnel, utile surtout pour le développement)
 RUN curl -sS https://get.symfony.com/cli/installer | bash \
