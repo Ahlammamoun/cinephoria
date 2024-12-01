@@ -40,7 +40,7 @@ class Film
     /**
      * @var Collection<int, Qualite>
      */
-    #[ORM\ManyToMany(targetEntity: Qualite::class, mappedBy: 'Films')]
+    #[ORM\ManyToMany(targetEntity: Qualite::class, mappedBy: 'films')]
     private Collection $qualites;
 
     /**

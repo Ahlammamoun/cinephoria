@@ -1,5 +1,10 @@
 {
     "require-dev": {
         "symfony/maker-bundle": "^1.61"
+    },
+    "require": {
+        "symfony/mercure": "^0.6.5",
+        "nelmio/cors-bundle": "^2.5",
+        "symfony/security-bundle": "^6.4"
     }
 }

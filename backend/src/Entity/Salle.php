@@ -7,6 +7,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SalleRepository::class)]
+
+
 class Salle
 {
     #[ORM\Id]
@@ -23,7 +25,6 @@ class Salle
     #[ORM\Column]
     private ?int $capacitePMR = null;
 
-    // Relation ManyToOne avec Qualite
     #[ORM\ManyToOne(inversedBy: 'salles')]
     #[ORM\JoinColumn(name: "qualite_id", referencedColumnName: "id", nullable: true)]
     private ?Qualite $qualite = null;
@@ -40,52 +41,30 @@ class Salle
         $this->incidents = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    // Getter et setter pour seances
+    public function getSeances(): Collection
     {
-        return $this->id;
+        return $this->seances;
     }
 
-    public function getNumero(): ?int
+    public function addSeance(Seance $seance): self
     {
-        return $this->numero;
-    }
+        if (!$this->seances->contains($seance)) {
+            $this->seances->add($seance);
+            $seance->setSalle($this);
+        }
 
-    public function setNumero(int $numero): static
-    {
-        $this->numero = $numero;
         return $this;
     }
 
-    public function getCapaciteTotale(): ?int
+    public function removeSeance(Seance $seance): self
     {
-        return $this->capaciteTotale;
-    }
+        if ($this->seances->removeElement($seance)) {
+            if ($seance->getSalle() === $this) {
+                $seance->setSalle(null);
+            }
+        }
 
-    public function setCapaciteTotale(int $capaciteTotale): static
-    {
-        $this->capaciteTotale = $capaciteTotale;
-        return $this;
-    }
-
-    public function getCapacitePMR(): ?int
-    {
-        return $this->capacitePMR;
-    }
-
-    public function setCapacitePMR(int $capacitePMR): static
-    {
-        $this->capacitePMR = $capacitePMR;
-        return $this;
-    }
-
-    public function getQualite(): ?Qualite
-    {
-        return $this->qualite;
-    }
-
-    public function setQualite(?Qualite $qualite): static
-    {
-        $this->qualite = $qualite;
         return $this;
     }
 }

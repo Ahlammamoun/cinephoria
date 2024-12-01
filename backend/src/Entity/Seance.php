@@ -22,14 +22,13 @@ class Seance
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateFin = null;
 
-    #[ORM\ManyToOne(inversedBy: 'Seances')]
+    #[ORM\ManyToOne(inversedBy: 'seances')]
     private ?Salle $salle = null;
 
     #[ORM\ManyToOne(inversedBy: 'seances')]
     private ?Film $films = null;
 
-    #[ORM\ManyToOne(inversedBy: 'seances')]
-    private ?Salle $salles = null;
+
 
     /**
      * @var Collection<int, Reservation>
