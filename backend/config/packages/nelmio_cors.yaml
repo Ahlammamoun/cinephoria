@@ -1,0 +1,9 @@
+nelmio_cors:
+  defaults:
+    allow_origin: ['*']  # Autorise toutes les origines, vous pouvez remplacer '*' par une URL spécifique, comme 'http://localhost:3000' pour votre frontend React
+    allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']  # Méthodes HTTP autorisées
+    allow_headers: ['Content-Type', 'Authorization', 'X-Requested-With']  # En-têtes autorisés
+    max_age: 3600  # Durée de mise en cache de la pré-requête OPTIONS
+  paths:
+    '^/api/':  # Appliquer la configuration uniquement sur les routes API
+      allow_origin: ['*']
