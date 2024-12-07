@@ -29,7 +29,6 @@ class Seance
     private ?Film $films = null;
 
 
-
     /**
      * @var Collection<int, Reservation>
      */

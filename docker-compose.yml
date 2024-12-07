@@ -5,7 +5,7 @@ services:
     image: mysql:8
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: cinephoria
       MYSQL_USER: cinephoria
       MYSQL_PASSWORD: cinephoria
@@ -14,7 +14,48 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - db-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+
+  # phpmyadmin:
+  #   image: phpmyadmin/phpmyadmin
+  #   container_name: phpmyadmin
+  #   environment:
+  #     PMA_HOST: mysql
+  #     PMA_USER: root
+  #     PMA_PASSWORD: rootpassword
+  #   ports:
+  #     - "8080:80"
+  #   depends_on:
+  #     - mysql
+  #   networks:
+  #     - app-network
+  # # React Frontend
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #   container_name: react-frontend
+  #   ports:
+  #     - "3000:80"
+  #   networks:
+  #     - app-network
+
+  symfony:
+    build:
+      context: ./backend
+    container_name: symfony-backend
+    environment:
+      DATABASE_URL: mysql://cineuser:cinepassword@mysql:3306/cinephoria
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mysql
+    networks:
+      - app-network
 
   frontend:
     build:
@@ -48,8 +89,12 @@ services:
     volumes:
       - ./backend/public:/var/www/html/public
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8000:80"
     depends_on:
-      - backend
+      - symfony
+    networks:
+      - app-network
 
 networks:
   cinephoria_network:
