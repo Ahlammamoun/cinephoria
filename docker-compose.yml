@@ -2,15 +2,13 @@
 
 services:
   db:
-    image: mysql:8
+    image: mysql:8.0
     container_name: mysql-db
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: cinephoria
       MYSQL_USER: cinephoria
       MYSQL_PASSWORD: cinephoria
-    networks:
-      - cinephoria_network
     ports:
       - "3306:3306"
     volumes:
@@ -21,8 +19,6 @@ services:
     build:
       context: ./frontend
     container_name: react-frontend
-    networks:
-      - cinephoria_network
     ports:
       - "3000:3000"
 
@@ -30,10 +26,10 @@ services:
     build:
       context: ./backend
     container_name: symfony-backend
+    environment:
+      DATABASE_URL: "mysql://cinephoria:cinephoria@mysql-db:3306/cinephoria?serverVersion=8.0.31&charset=utf8mb4"
     volumes:
       - ./backend:/var/www/html
-    networks:
-      - cinephoria_network
     ports:
       - "9000:9000"
   
@@ -41,8 +37,6 @@ services:
   nginx:
     image: nginx:latest
     container_name: symfony-nginx
-    networks:
-      - cinephoria_network
     ports:
       - "8000:80"
     volumes:
@@ -50,9 +44,6 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
   
 
-networks:
-  cinephoria_network:
-    driver: bridge
 
 volumes:
   mysql-data:

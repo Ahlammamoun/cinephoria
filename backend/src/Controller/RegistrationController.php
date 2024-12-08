@@ -38,6 +38,7 @@ class RegistrationController extends AbstractController
             $em->persist($user);
             $em->flush();
 
+
             return new JsonResponse(['message' => 'User created successfully'], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);

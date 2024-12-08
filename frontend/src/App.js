@@ -5,6 +5,7 @@ import RegisterForm from "./components/RegisterForm";
 import Home from "./components/Home";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
+import LoginForm from "./components/LoginForm";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<RegisterForm />} />
+          <Route path="/login" element={<LoginForm />} />
         </Routes>
         <footer>
           <Footer />
