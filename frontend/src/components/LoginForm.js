@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import axios from "axios";
-
+import { UserContext } from "./UserContext"; // Chemin correct vers le fichier UserContext
+import { useNavigate } from "react-router-dom";
 
 const LoginForm = () => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  const { setUser } = useContext(UserContext); // Utilisation correcte du contexte
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,9 +25,11 @@ const LoginForm = () => {
         login,
         password,
       });
-
+      const { token, user } = response.data;
+      localStorage.setItem("jwtToken", token);
+      setUser(user); // Mettre à jour le contexte utilisateur
       setSuccess(true);
-      setError(null);
+      navigate("/"); // Redirection vers l'accueil
     } catch (err) {
       setError(err.response?.data?.error || "Login failed. Please try again.");
       setSuccess(false);
@@ -55,6 +61,7 @@ const LoginForm = () => {
           />
         </div>
         <button type="submit">Login</button>
+        <li><a href="/register">Register</a></li>
       </form>
     </div>
   );

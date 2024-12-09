@@ -18,7 +18,7 @@ const movies = [
 const Home = () => {
   return (
     <div className="home-container">
-      <h1>Les Films</h1>
+      <h1>Les Filmsf dfzxz d  </h1>
       <div className="movie-carousel">
         {movies.map((movie) => (
           <div className="movie-item" key={movie.id}>

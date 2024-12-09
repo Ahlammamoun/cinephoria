@@ -6,9 +6,11 @@ import Home from "./components/Home";
 import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import LoginForm from "./components/LoginForm";
+import { UserProvider } from "./components/UserContext";
 
 function App() {
   return (
+    <UserProvider>
     <Router>
       <div className="App">
         <header className="App-header">
@@ -26,6 +28,7 @@ function App() {
         </footer>
       </div>
     </Router>
+    </UserProvider>
   );
 }
 
