@@ -69,17 +69,22 @@ class Seance
         return $this;
     }
 
-    public function getSalle(): ?Salle
+    #[ORM\ManyToOne(targetEntity: Qualite::class, inversedBy: 'seances')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Qualite $qualite = null;
+    
+    public function getQualite(): ?Qualite
     {
-        return $this->salle;
+        return $this->qualite;
     }
-
-    public function setSalle(?Salle $salle): static
+    
+    public function setQualite(?Qualite $qualite): static
     {
-        $this->salle = $salle;
-
+        $this->qualite = $qualite;
+    
         return $this;
     }
+    
 
     public function getFilms(): ?Film
     {

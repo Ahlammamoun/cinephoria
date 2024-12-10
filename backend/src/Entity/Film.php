@@ -49,6 +49,9 @@ class Film
     #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'films')]
     private Collection $seances;
 
+    #[ORM\Column(length: 512, nullable: true)]
+    private ?string $affiche = null;
+
     public function __construct()
     {
         $this->genres = new ArrayCollection();
@@ -213,6 +216,18 @@ class Film
                 $seance->setFilms(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAffiche(): ?string
+    {
+        return $this->affiche;
+    }
+
+    public function setAffiche(?string $affiche): static
+    {
+        $this->affiche = $affiche;
 
         return $this;
     }

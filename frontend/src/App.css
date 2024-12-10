@@ -57,14 +57,17 @@
 
 .nav-links a {
   text-decoration: none;
-  color: white;
+  color: #e50914;
   transition: color 0.3s ease;
 }
 
 .nav-links a:hover {
-  color: #e50914;
+  color: #83050c;
 }
-
+a.logo {
+  color: #e50914;
+  text-decoration: none;
+}
 /* Home Page styles */
 .home-container {
   background-color: #1b1b1b;
@@ -93,8 +96,12 @@ h1 {
   padding: 10px;
   border-radius: 10px;
   width: 210px;
+  height: 300px; /* Définissez une hauteur fixe pour le conteneur */
   text-align: center;
   transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .movie-item:hover {
@@ -103,7 +110,8 @@ h1 {
 
 .movie-item img {
   width: 100%;
-  height: auto;
+  height: 290px; /* Définissez la hauteur souhaitée */
+  object-fit: cover; /* Remplit le conteneur en recadrant l'image si nécessaire */
   border-radius: 5px;
 }
 
@@ -111,6 +119,14 @@ h1 {
   margin-top: 10px;
   font-size: 14px;
   color: white;
+}
+.movie-description {
+  font-size: 14px;
+  color: #555;
+}
+.movie-description span {
+  color: blue;
+  cursor: pointer;
 }
 
 /* RegisterForm styles */
@@ -122,6 +138,7 @@ h1 {
   max-width: 400px;
   margin: 50px auto;
   box-shadow: 0 4px 8px rgba(165, 22, 22, 0.2);
+  min-height: 36em;
 }
 
 .register-container h2 {
@@ -170,6 +187,8 @@ h1 {
   transition: background-color 0.3s ease;
 }
 
+
+
 .register-container button:hover {
   background-color: #b20710;
 }
@@ -189,6 +208,15 @@ h1 {
   color: #4caf50;
   font-weight: bold;
 }
+li.register {
+  list-style-type: none;
+  background-color: #e50914;
+
+}
+a.register{
+  text-decoration: dashed;
+  color: white;
+}
 /* LoginForm styles */
 .login-container {
   background-color: #1b1b1b;
@@ -198,6 +226,7 @@ h1 {
   max-width: 400px;
   margin: 50px auto;
   box-shadow: 0 4px 8px rgba(185, 16, 16, 0.2);
+  min-height: 36em;
 }
 
 .login-container h2 {

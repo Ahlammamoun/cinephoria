@@ -22,6 +22,9 @@ class Qualite
 
     #[ORM\OneToMany(mappedBy: 'qualite', targetEntity: Salle::class)]
     private Collection $salles; // Correction du nom pour être cohérent avec 'qualite'
+    
+    #[ORM\OneToMany(targetEntity: Seance::class, mappedBy: 'qualite')]
+    private Collection $seances;
 
     public function __construct()
     {
@@ -44,7 +47,20 @@ class Qualite
         $this->name = $name;
         return $this;
     }
-
+    #[ORM\Column(type: 'float')]
+    private ?float $prix = null;
+    
+    public function getPrix(): ?float
+    {
+        return $this->prix;
+    }
+    
+    public function setPrix(float $prix): static
+    {
+        $this->prix = $prix;
+        return $this;
+    }
+    
     public function getFilms(): Collection
     {
         return $this->films;

@@ -61,7 +61,7 @@ const LoginForm = () => {
           />
         </div>
         <button type="submit">Login</button>
-        <li><a href="/register">Register</a></li>
+        <li className="register"><a className="register"href="/register">Register</a></li>
       </form>
     </div>
   );

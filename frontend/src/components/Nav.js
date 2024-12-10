@@ -9,20 +9,21 @@ function Nav() {
   return (
     <nav className="nav-container">
     <div className="logo">
-      <h1>Cinéphoria</h1>
+      <h1><a className="logo" href="/">Cinéphoria</a></h1>
+
     </div>
     <ul className="nav-links">
       {user ? (
         <>
-          <p>Welcome,  {user.nom} ({user.role})!</p>
+          <li>Welcome,  {user.nom} ({user.role})!</li>
           <li><a href="/">Logout</a></li>
         </>
       ) : (
         <li><a href="/login">Login</a></li>
       )}
-      <li><a href="/">Accueil</a></li>
+      <li><a href="/">Home</a></li>
       <li><a href="/reservation">Réservation</a></li>
-      <li><a href="/films">Films</a></li>
+      <li><a href="/films">Movies</a></li>
       <li><a href="/contact">Contact</a></li>
     </ul>
   </nav>
