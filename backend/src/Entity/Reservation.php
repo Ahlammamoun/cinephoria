@@ -17,8 +17,10 @@ class Reservation
     #[ORM\Column]
     private ?int $nombreSieges = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
-    private array $siegesReserves = [];
+    #[ORM\Column(type: 'json', nullable: true)]
+    private array $siegesReserves = []; 
+    
+
 
     #[ORM\Column]
     private ?float $prixTotal = null;

@@ -7,6 +7,7 @@ import Nav from "./components/Nav";
 import Footer from "./components/Footer";
 import LoginForm from "./components/LoginForm";
 import { UserProvider } from "./components/UserContext";
+import ReservationForm from "./components/ReservationForm";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/reservation" element={<ReservationForm />} />
         </Routes>
         <footer>
           <Footer />

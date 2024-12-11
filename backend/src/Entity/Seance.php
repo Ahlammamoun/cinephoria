@@ -98,15 +98,16 @@ class Seance
         return $this;
     }
 
-    public function getSalles(): ?Salle
+    public function getSalle(): ?Salle
     {
-        return $this->salles;
+        return $this->salle;
     }
-
-    public function setSalles(?Salle $salles): static
+    
+    // Setter pour 'salle'
+    public function setSalle(?Salle $salle): static
     {
-        $this->salles = $salles;
-
+        $this->salle = $salle;
+    
         return $this;
     }
 

@@ -35,6 +35,9 @@ class Salle
     #[ORM\OneToMany(mappedBy: 'salle', targetEntity: Incident::class)]
     private Collection $incidents;
 
+    #[ORM\ManyToOne(inversedBy: 'salle')]
+    private ?Cinema $cinema = null;
+
     public function __construct()
     {
         $this->seances = new ArrayCollection();
@@ -67,4 +70,44 @@ class Salle
 
         return $this;
     }
+
+    public function getCinema(): ?Cinema
+    {
+        return $this->cinema;
+    }
+
+    public function setCinema(?Cinema $cinema): static
+    {
+        $this->cinema = $cinema;
+
+        return $this;
+    }
+    
+    public function getNumero(): ?int
+    {
+        return $this->numero;
+    }
+
+    // Setter pour numero (facultatif)
+    public function setNumero(int $numero): self
+    {
+        $this->numero = $numero;
+        return $this;
+    }
+
+
+
+
+    public function getCapaciteTotale(): ?int
+    {
+        return $this->capaciteTotale;
+    }
+
+    // Setter pour numero (facultatif)
+    public function setCapaciteTotale(int $capaciteTotale): self
+    {
+        $this->capaciteTotale = $capaciteTotale;
+        return $this;
+    }
+
 }
