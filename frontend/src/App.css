@@ -134,10 +134,9 @@ h1 {
   background-color: #1b1b1b;
   color: white;
   padding: 30px;
-  border-radius: 10px;
+  border: solid 5px rgba(165, 22, 22, 0.2);
   max-width: 400px;
   margin: 50px auto;
-  box-shadow: 0 4px 8px rgba(165, 22, 22, 0.2);
   min-height: 36em;
 }
 
@@ -168,7 +167,12 @@ h1 {
   border-radius: 5px;
   font-size: 14px;
   outline: none;
+  width: 88%;
+  padding:10px;
   transition: border-color 0.3s ease;
+  display: block;
+  margin-bottom: 8px;
+  
 }
 
 .register-container input:focus,
@@ -219,13 +223,12 @@ a.register{
 }
 /* LoginForm styles */
 .login-container {
-  background-color: #1b1b1b;
+  background-color: #1b1b1b; 
   color: white;
   padding: 30px;
-  border-radius: 10px;
+  border: solid 5px rgba(185, 16, 16, 0.2);
   max-width: 400px;
   margin: 50px auto;
-  box-shadow: 0 4px 8px rgba(185, 16, 16, 0.2);
   min-height: 36em;
 }
 
@@ -233,6 +236,7 @@ a.register{
   color: #e50914;
   text-align: center;
   margin-bottom: 20px;
+  font-size: 24px;
 }
 
 .login-container form {
@@ -249,13 +253,14 @@ a.register{
 
 .login-container input {
   background-color: #2a2a2a;
-  color: white;
+  color: whitesmoke;
   border: 1px solid #444;
   padding: 10px;
   border-radius: 5px;
   font-size: 14px;
   outline: none;
   transition: border-color 0.3s ease;
+  width: 70%;
 }
 
 .login-container input:focus {
@@ -298,16 +303,18 @@ a.register{
   color: white;
   padding: 30px;
   border-radius: 10px;
+  border: solid 5px rgba(185, 16, 16, 0.2);
   max-width: 400px;
   margin: 50px auto;
-  box-shadow: 0 4px 8px rgba(185, 16, 16, 0.2);
   min-height: 36em;
+  font-family: Arial, sans-serif;
 }
 
 .reservation-container h1 {
   color: #e50914;
   text-align: center;
   margin-bottom: 20px;
+  font-size: 24px;
 }
 
 .reservation-container form {
@@ -378,6 +385,129 @@ a.register{
   color: #4caf50;
   font-weight: bold;
 }
+
+.select-container {
+  margin-bottom: 16px;
+}
+
+.email-input, .select-container {
+  margin-bottom: 16px;
+}
+/* Style des labels */
+.email-input label,
+.select-container label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  color: rgb(219, 206, 206);
+}
+/* Champs input */
+.styled-input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  color: #333;
+}
+
+/* Placeholder */
+.styled-input::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Focus des inputs */
+.styled-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+/* Bouton stylisé */
+.styled-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.styled-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.02);
+}
+
+.styled-button:focus {
+  outline: none;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+/* Groupes de champs */
+.form-group {
+  margin-bottom: 16px;
+}
+
+/* Labels */
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: rgb(226, 216, 216);
+  font-size: 14px;
+}
+
+/* Lien pour l'enregistrement */
+.register-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.register-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+}
+/* Style personnalisé pour les selects */
+.styled-select {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  background-color: #2a2a2a;
+  appearance: none; /* Supprime la flèche par défaut sur certains navigateurs */
+  outline: none;
+  cursor: pointer;
+  color: whitesmoke;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Focus sur le select */
+.styled-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+  background-color: #2a2a2a;
+}
+
+/* Style des options */
+.styled-select option {
+  padding: 8px;
+  font-size: 14px;
+}
+
 .seance-container {
   background-color: #1b1b1b;
   color: white;
@@ -386,6 +516,11 @@ a.register{
   max-width: 600px;
   margin: 20px auto;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+h3.siege {
+
+  color: rgb(219, 206, 206);
 }
 
 .seance-container h3 {
@@ -427,6 +562,53 @@ a.register{
 .seance-room strong {
   color: #e50914;
 }
+
+.response-container {
+  background-color: #f0f9ff;
+  border: 1px solid #bae6fd;
+  padding: 16px;
+  margin-top: 16px;
+  border-radius: 8px;
+  color: #0369a1;
+}
+
+.response-container h2 {
+  margin: 0 0 8px;
+  color: #0284c7;
+}
+
+.response-container p {
+  margin: 4px 0;
+}
+
+.response-container ul {
+  margin: 8px 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.response-container ul li {
+  background-color: #e0f2fe;
+  margin: 4px 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #0369a1;
+}
+
+.error-container {
+  background-color: #ffe4e6;
+  border: 1px solid #fca5a5;
+  padding: 16px;
+  margin-top: 16px;
+  border-radius: 8px;
+  color: #b91c1c;
+}
+
+.error-container .error {
+  margin: 0;
+}
+
+
 
 /* Footer styles */
 .footer-container {

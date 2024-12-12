@@ -16,6 +16,8 @@ use Symfony\Component\Security\Core\Security;
 use App\Repository\CinemaRepository;
 use App\Repository\FilmRepository;
 use App\Repository\SeanceRepository;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class ReservationController extends AbstractController
 {
@@ -93,6 +95,8 @@ class ReservationController extends AbstractController
             return new JsonResponse(['error' => 'Cinema or Film not found'], 404);
         }
 
+
+     
         // Récupérer les séances associées
         $seances = [];
         foreach ($cinema->getSalle() as $salle) {
@@ -127,14 +131,23 @@ class ReservationController extends AbstractController
     public function createReservation(
         Request $request,
         EntityManagerInterface $entityManager,
-        SeanceRepository $seanceRepository
+        SeanceRepository $seanceRepository,
+        MailerInterface $mailer
     ): JsonResponse {
 
 
         $seance = $seanceRepository->find(1);
         $salle = $seance->getSalle();
+        $totalSeats = range(1, $salle->getCapaciteTotale()); // Exemple : Si 100 sièges, génère [1, 2, ..., 100]
 
-        // dump($salle);
+        // Récupérer les sièges déjà réservés
+        $reservedSeats = [];
+        foreach ($seance->getReservations() as $reservation) {
+            $reservedSeats = array_merge($reservedSeats, $reservation->getSiegesReserves());
+        }
+
+        // Filtrer les sièges disponibles
+        $availableSeats = array_diff($totalSeats, $reservedSeats);
 
         $data = json_decode($request->getContent(), true);
         // dump($data);
@@ -143,6 +156,7 @@ class ReservationController extends AbstractController
         $seats = $data['seats'] ?? [];
         $userId = $data['userId'] ?? null;
         $price = $data['price'] ?? null;
+        $email = $data['email'] ?? null;
 
         if (!$seanceId || empty($seats) || !$userId) {
             return new JsonResponse(['error' => 'Missing required fields'], 400);
@@ -174,16 +188,33 @@ class ReservationController extends AbstractController
         $reservation->setSeances($seance);
         $reservation->setNombreSieges(count($seats));
         $reservation->setSiegesReserves($seats);
-        $reservation->setPrixTotal($price); 
+        $reservation->setPrixTotal($price);
 
         // Sauvegarder la réservation
         $entityManager->persist($reservation);
         $entityManager->flush();
 
+
+
+        $emailMessage = (new Email())
+            ->from('noreply@cinema.com') // Adresse expéditeur
+            ->to($email) // Adresse du destinataire
+            ->subject('Confirmation de votre réservation')
+            ->html("
+            <h1>Votre réservation est confirmée !</h1>
+            <p>Merci d'avoir réservé avec notre service.</p>
+            <p><strong>Réservation ID :</strong> {$reservation->getId()}</p>
+            <p><strong>Sièges :</strong> " . implode(', ', $seats) . "</p>
+            <p><strong>Prix total :</strong> {$price} €</p>
+        ");
+
+        $mailer->send($emailMessage); // Envoi de l'e-mail
+
         return new JsonResponse([
             'success' => true,
             'reservationId' => $reservation->getId(),
             'priceValidated' => $price,
+            'availableSeats' => $availableSeats,
         ], 201);
     }
 

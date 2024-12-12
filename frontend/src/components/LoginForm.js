@@ -42,26 +42,30 @@ const LoginForm = () => {
       {success && <p className="success">Login successful!</p>}
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Login:</label>
+        <div className="form-group">
+          <label className="login-input">Login:</label>
           <input
+            id="login-input"
             type="text"
             value={login}
             onChange={(e) => setLogin(e.target.value)}
             required
           />
         </div>
-        <div>
-          <label>Password:</label>
+        <div className="form-group">
+          <label className="password-input">Password:</label>
           <input
+            id="password-input"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
-        <button type="submit">Login</button>
-        <li className="register"><a className="register"href="/register">Register</a></li>
+        <button type="submit" className="styled-button">Login</button>
+        <p className="register-link">
+          Pas encore de compte ? <a href="/register">S'inscrire</a>
+        </p>
       </form>
     </div>
   );

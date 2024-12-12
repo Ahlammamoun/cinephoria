@@ -12,6 +12,7 @@ const ReservationPage = () => {
     const [price, setPrice] = useState(0);
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
+    const [email, setEmail] = useState(""); // État pour stocker l'e-mail
 
     const seance = seances.find((s) => s.id === parseInt(selectedSeance, 10));
     const maxSeats = seance ? seance.availableSeats : 10;
@@ -104,18 +105,24 @@ const ReservationPage = () => {
         }
     }, [selectedSeance, numSeats, seances]);
 
+
+
     // Gestion de la réservation
     const handleReservation = async () => {
         if (!selectedSeance) {
             setError("Veuillez sélectionner une séance.");
             return;
         }
-
+        if (!email) {
+            setError("Veuillez entrer une adresse e-mail valide.");
+            return;
+        }
         const payload = {
             seanceId: selectedSeance,
             userId: 1, // ID utilisateur simulé pour les tests
-            seats: Array.from({ length: numSeats }, (_, i) => `S${i + 1}`), // Exemple de sièges générés
+            seats: selectedSeats,
             price: price,
+            email: email,
         };
 
         try {
@@ -130,26 +137,31 @@ const ReservationPage = () => {
         }
     };
 
+    useEffect(() => {
+        console.log("Mise à jour du nombre de sièges (numSeats) :", numSeats);
+        if (selectedSeats.length > numSeats) {
+            setSelectedSeats([]);
+        }
+    }, [numSeats]);
+
 
     const handleSeatSelection = (seat) => {
         console.log("Seat clicked:", seat);
         console.log("Currently selected seats:", selectedSeats);
         console.log("Maximum seats allowed:", numSeats);
-    
+
         if (selectedSeats.includes(seat)) {
-            // Déselectionner un siège déjà sélectionné
             console.log("Deselecting seat:", seat);
-            setSelectedSeats(selectedSeats.filter((s) => s !== seat));
+            setSelectedSeats((prevSeats) => prevSeats.filter((s) => s !== seat)); // Déselectionner
         } else if (selectedSeats.length < numSeats) {
-            // Ajouter un siège si la limite n'est pas atteinte
             console.log("Selecting seat:", seat);
-            setSelectedSeats([...selectedSeats, seat]);
+            setSelectedSeats((prevSeats) => [...prevSeats, seat]); // Ajouter un siège
         } else {
-            // Afficher un message si la limite est atteinte
+            console.warn(`Limite atteinte (${numSeats} sièges). Impossible de sélectionner davantage.`);
             alert(`Vous avez atteint la limite de ${numSeats} siège(s) sélectionné(s) !`);
         }
     };
-    
+
 
 
     return (
@@ -157,9 +169,14 @@ const ReservationPage = () => {
             <h1>Réserver une séance</h1>
 
             {/* Sélection du cinéma */}
-            <div>
-                <label>Cinéma :</label>
-                <select onChange={(e) => setSelectedCinema(e.target.value)} value={selectedCinema}>
+            <div className="select-container">
+                <label htmlFor="cinema-select">Cinéma :</label>
+                <select
+                    id="cinema-select"
+                    className="styled-select"
+                    onChange={(e) => setSelectedCinema(e.target.value)}
+                    value={selectedCinema}
+                >
                     <option value="">Sélectionnez un cinéma</option>
                     {cinemas.map((cinema) => (
                         <option key={cinema.id} value={cinema.id}>
@@ -171,9 +188,14 @@ const ReservationPage = () => {
 
             {/* Sélection du film */}
             {films.length > 0 && (
-                <div>
-                    <label>Film :</label>
-                    <select onChange={(e) => setSelectedFilm(e.target.value)} value={selectedFilm}>
+                <div className="select-container">
+                    <label htmlFor="film-select">Film :</label>
+                    <select
+                        id="film-select"
+                        className="styled-select"
+                        onChange={(e) => setSelectedFilm(e.target.value)}
+                        value={selectedFilm}
+                    >
                         <option value="">Sélectionnez un film</option>
                         {films.map((film) => (
                             <option key={film.id} value={film.id}>
@@ -181,14 +203,13 @@ const ReservationPage = () => {
                             </option>
                         ))}
                     </select>
-
                 </div>
             )}
 
             {/* Sélection de la séance */}
             {seances.length > 0 && (
                 <div className="seance-container">
-                    <h3>Choisissez une séance :</h3>
+                    <h3 className="seance">Choisissez une séance :</h3>
                     <ul className="seance-list">
                         {seances.map((seance) => (
                             <li
@@ -216,30 +237,54 @@ const ReservationPage = () => {
             {/* Nombre de sièges */}
             {selectedSeance && (
                 <div className="seats-selection">
-                    <h3>Sélectionnez vos sièges :</h3>
+                    <h3 className="siege">Sélectionnez vos sièges :</h3>
+                    {/* Ajout de contrôles pour gérer le nombre de sièges dynamiquement */}
+                    <div className="num-seats-control">
+                        <button
+                            onClick={() => setNumSeats((prev) => Math.max(1, prev - 1))}
+                            disabled={numSeats <= 1}
+                        >
+                            -
+                        </button>
+                        <span>{numSeats} sièges</span>
+                        <button
+                            onClick={() => setNumSeats((prev) => Math.min(maxSeats, prev + 1))}
+                            disabled={numSeats >= maxSeats}
+                        >
+                            +
+                        </button>
+                    </div>
+
+                    {/* Affichage des sièges disponibles */}
                     <div className="seats-container">
                         {availableSeats.map((seat) => (
                             <button
                                 key={seat}
-                                className={`seat ${selectedSeats.includes(seat) ? 'selected' : ''
-                                    } ${selectedSeats.length >= numSeats && !selectedSeats.includes(seat)
-                                        ? 'disabled'
-                                        : ''
-                                    }`}
+                                className={`seat ${selectedSeats.includes(seat) ? 'selected' : ''}`}
                                 onClick={() => handleSeatSelection(seat)}
                                 disabled={
-                                    selectedSeats.length >= numSeats && !selectedSeats.includes(seat)
+                                    selectedSeats.length >= numSeats && !selectedSeats.includes(seat) // Désactiver si limite atteinte
                                 }
                             >
                                 {seat}
                             </button>
                         ))}
-
                     </div>
                     <p>Sièges sélectionnés : {selectedSeats.join(", ")}</p>
                 </div>
             )}
 
+            <div className="email-input">
+                <label className="email-input">Adresse e-mail :</label>
+                <input
+                    id="email-input"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Entrez votre e-mail"
+                    required
+                />
+            </div>
             {/* Prix et validation */}
             {price > 0 && (
                 <div>
@@ -250,9 +295,21 @@ const ReservationPage = () => {
 
             {/* Affichage de la réponse ou des erreurs */}
             {response && (
-                <div>
-                    <h2>Réponse :</h2>
-                    <pre>{JSON.stringify(response, null, 2)}</pre>
+                <div className="response-container">
+                    <h2>Réservation réussie !</h2>
+                    <p><strong>ID de la réservation :</strong> {response.reservationId}</p>
+                    <p> {numSeats} <strong>Siège reservé</strong></p>
+                    <p><strong>Prix total validé :</strong> {response.priceValidated} €</p>
+                    {response.remainingSeats && (
+                        <div>
+                            <strong>Sièges restants :</strong>
+                            <ul>
+                                {response.remainingSeats.map((seat, index) => (
+                                    <li key={index}>{seat}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             )}
             {error && <p className="error">{error}</p>}
