@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import LoginForm from "./components/LoginForm";
 import { UserProvider } from "./components/UserContext";
 import ReservationForm from "./components/ReservationForm";
+import Commandes from "./components/Commandes";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/register" element={<RegisterForm />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/reservation" element={<ReservationForm />} />
+          <Route path="/commandes" element={<Commandes />} />
         </Routes>
         <footer>
           <Footer />

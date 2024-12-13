@@ -7,6 +7,8 @@ use App\Entity\Reservation;
 use App\Entity\Utilisateur;
 use App\Entity\Cinema;
 use App\Entity\Film;
+use App\Repository\ReservationRepository;
+use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,6 +20,7 @@ use App\Repository\FilmRepository;
 use App\Repository\SeanceRepository;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class ReservationController extends AbstractController
 {
@@ -84,7 +87,8 @@ class ReservationController extends AbstractController
         int $cinemaId,
         int $filmId,
         CinemaRepository $cinemaRepository,
-        FilmRepository $filmRepository
+        FilmRepository $filmRepository,
+        ReservationRepository $reservation
     ): JsonResponse {
         // Récupérer le cinéma et le film
         $cinema = $cinemaRepository->find($cinemaId);
@@ -95,21 +99,45 @@ class ReservationController extends AbstractController
             return new JsonResponse(['error' => 'Cinema or Film not found'], 404);
         }
 
-
-     
         // Récupérer les séances associées
         $seances = [];
         foreach ($cinema->getSalle() as $salle) {
             foreach ($salle->getSeances() as $seance) {
                 // Filtrer les séances associées au film spécifié
                 if ($seance->getFilms()->getId() === $filmId) {
+                    // Liste complète des sièges (exemple : ["S1", "S2", ..., "S100"])
+                    $totalSeats = $salle->getCapaciteTotale();
+                    $allSeats = array_map(function ($index) {
+                        return "S" . ($index + 1);
+                    }, range(0, $totalSeats - 1));
+                    // Déterminer les sièges réservés pour les handicapés (3 derniers sièges)
+                    $handicapSeats = array_slice($allSeats, -3);
+
+                    // Récupérer les sièges réservés
+                    $reservedSeats = [];
+                    foreach ($seance->getReservations() as $reservation) {
+                        $seatNumbers = $reservation->getSiegesReserves(); // Supposons que cela retourne un tableau
+                        if (is_array($seatNumbers)) {
+                            $reservedSeats = array_merge($reservedSeats, $seatNumbers); // Fusionner les sièges dans $reservedSeats
+                        } elseif (is_string($seatNumbers)) {
+                            $reservedSeats[] = $seatNumbers; // Ajouter directement si c'est une chaîne unique
+                        }
+                    }
+                    // Combiner les sièges réservés pour les handicapés et les autres réservés
+                    $allReservedSeats = array_merge($reservedSeats, $handicapSeats);
+                    // Calculer les sièges disponibles
+                    $freeSeats = array_diff($allSeats, $reservedSeats);
+
+                    // Ajouter les informations de la séance
                     $seances[] = [
                         'id' => $seance->getId(),
                         'dateDebut' => $seance->getDateDebut()->format('Y-m-d H:i'),
                         'dateFin' => $seance->getDateFin()->format('Y-m-d H:i'),
                         'qualite' => $seance->getQualite()->getName(),
                         'salle' => $salle->getNumero(),
-                        'availableSeats' => $salle->getCapaciteTotale() - count($seance->getReservations()),
+                        'availableSeats' => count($freeSeats), // Nombre de sièges disponibles
+                        'freeSeatsList' => array_values($freeSeats), // Liste des sièges disponibles
+                        'handicapSeats' => $handicapSeats,
                     ];
                 }
             }
@@ -119,7 +147,7 @@ class ReservationController extends AbstractController
         if (empty($seances)) {
             return new JsonResponse(['error' => 'No seances found for this film in this cinema'], 404);
         }
-        //   !  dump($seances);
+
         // Retourner les données des séances
         return new JsonResponse([
             'success' => true,
@@ -127,12 +155,14 @@ class ReservationController extends AbstractController
         ], 200);
     }
 
+
     #[Route('/api/reservation/create', name: 'api_create_reservation', methods: ['POST'])]
     public function createReservation(
         Request $request,
         EntityManagerInterface $entityManager,
         SeanceRepository $seanceRepository,
-        MailerInterface $mailer
+        MailerInterface $mailer,
+        UtilisateurRepository $utilisateurRepository,
     ): JsonResponse {
 
 
@@ -156,7 +186,7 @@ class ReservationController extends AbstractController
         $seats = $data['seats'] ?? [];
         $userId = $data['userId'] ?? null;
         $price = $data['price'] ?? null;
-        $email = $data['email'] ?? null;
+
 
         if (!$seanceId || empty($seats) || !$userId) {
             return new JsonResponse(['error' => 'Missing required fields'], 400);
@@ -168,6 +198,12 @@ class ReservationController extends AbstractController
             return new JsonResponse(['error' => 'Seance not found'], 404);
         }
 
+
+        // Récupérer l'utilisateur
+        $utilisateur = $utilisateurRepository->find($userId);
+        if (!$utilisateur) {
+            return new JsonResponse(['error' => 'User not found'], 404);
+        }
         // // Calculer le prix côté backend (au cas où)
         // $backendPrice = count($seats) * $seance->getQualite()->getPrix();
 
@@ -184,7 +220,7 @@ class ReservationController extends AbstractController
 
         // Créer une réservation
         $reservation = new Reservation();
-        // $reservation->setUtilisateur($userId);
+        $reservation->setUtilisateur($utilisateur); 
         $reservation->setSeances($seance);
         $reservation->setNombreSieges(count($seats));
         $reservation->setSiegesReserves($seats);
@@ -196,19 +232,19 @@ class ReservationController extends AbstractController
 
 
 
-        $emailMessage = (new Email())
-            ->from('noreply@cinema.com') // Adresse expéditeur
-            ->to($email) // Adresse du destinataire
-            ->subject('Confirmation de votre réservation')
-            ->html("
-            <h1>Votre réservation est confirmée !</h1>
-            <p>Merci d'avoir réservé avec notre service.</p>
-            <p><strong>Réservation ID :</strong> {$reservation->getId()}</p>
-            <p><strong>Sièges :</strong> " . implode(', ', $seats) . "</p>
-            <p><strong>Prix total :</strong> {$price} €</p>
-        ");
+        // $emailMessage = (new Email())
+        //     ->from('noreply@cinema.com') // Adresse expéditeur
+        //     ->to($email) // Adresse du destinataire
+        //     ->subject('Confirmation de votre réservation')
+        //     ->html("
+        //     <h1>Votre réservation est confirmée !</h1>
+        //     <p>Merci d'avoir réservé avec notre service.</p>
+        //     <p><strong>Réservation ID :</strong> {$reservation->getId()}</p>
+        //     <p><strong>Sièges :</strong> " . implode(', ', $seats) . "</p>
+        //     <p><strong>Prix total :</strong> {$price} €</p>
+        // ");
 
-        $mailer->send($emailMessage); // Envoi de l'e-mail
+        // $mailer->send($emailMessage); // Envoi de l'e-mail
 
         return new JsonResponse([
             'success' => true,
@@ -218,7 +254,45 @@ class ReservationController extends AbstractController
         ], 201);
     }
 
+    #[Route('/api/commandes', name: 'api_commandes', methods: ['GET'])]
+    public function getUserReservations(SessionInterface $session, EntityManagerInterface $em): JsonResponse
+    {
+        $loggedInUser = $session->get('user');
 
+        if (!$loggedInUser) {
+            return new JsonResponse(['error' => 'User not authenticated'], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+
+        $user = $em->getRepository(Utilisateur::class)->findOneBy(['login' => $loggedInUser['login']]);
+
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        // Récupérer les réservations liées à cet utilisateur
+        $reservations = $em->getRepository(Reservation::class)->findBy(['utilisateur' => $user]);
+
+        if (!$reservations) {
+            return new JsonResponse(['error' => 'No reservations found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        $reservationsData = array_map(function ($reservation) {
+            return [
+                'id' => $reservation->getId(),
+                'seance' => [
+                    'id' => $reservation->getSeances()->getId(),
+                    'dateDebut' => $reservation->getSeances()->getDateDebut()->format('Y-m-d H:i'),
+                    'dateFin' => $reservation->getSeances()->getDateFin()->format('Y-m-d H:i'),
+                    'film' => $reservation->getSeances()->getFilms()->getTitle(),
+                    'salle' => $reservation->getSeances()->getSalle()->getNumero(),
+                ],
+                'sieges' => $reservation->getSiegesReserves(),
+                'prixTotal' => $reservation->getPrixTotal(),
+            ];
+        }, $reservations);
+
+        return new JsonResponse(['reservations' => $reservationsData], JsonResponse::HTTP_OK);
+    }
 
 
 }

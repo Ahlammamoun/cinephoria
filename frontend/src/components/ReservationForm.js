@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
+import { UserContext } from "./UserContext"; ;
 
 const ReservationPage = () => {
     const [cinemas, setCinemas] = useState([]);
@@ -12,7 +13,7 @@ const ReservationPage = () => {
     const [price, setPrice] = useState(0);
     const [response, setResponse] = useState(null);
     const [error, setError] = useState(null);
-    const [email, setEmail] = useState(""); // État pour stocker l'e-mail
+    const { user } = useContext(UserContext);
 
     const seance = seances.find((s) => s.id === parseInt(selectedSeance, 10));
     const maxSeats = seance ? seance.availableSeats : 10;
@@ -55,7 +56,7 @@ const ReservationPage = () => {
                     const response = await axios.get(
                         `http://localhost:8000/api/reservation/films/${selectedCinema}`
                     );
-                    // console.log("films :", response.data);
+                    //    console.log("siege info  :", response.data);
                     setFilms(response.data);
                 } catch (err) {
                     console.error("Erreur lors de la récupération des films :", err);
@@ -93,12 +94,8 @@ const ReservationPage = () => {
                 const qualityPrice = qualityPrices[seance.qualite] || 10; // Par défaut, 10 € si la qualité n'est pas reconnue
                 console.log("Prix unitaire par qualité :", qualityPrice);
                 setPrice(qualityPrice * numSeats);
-                const totalSeats = seance.availableSeats; // Nombre total de sièges
-                const reservedSeats = seance.reservedSeats || []; // Sièges déjà réservés (exemple : ["A1", "B2"])
-                const allSeats = Array.from({ length: totalSeats }, (_, i) => `S${i + 1}`);
-                const freeSeats = allSeats.filter((seat) => !reservedSeats.includes(seat)); // Filtrer les sièges réservés
-                console.log("Nombre total de sièges :", totalSeats);
-                console.log("Sièges réservés :", reservedSeats);
+                // Utiliser directement les sièges disponibles depuis le backend
+                const freeSeats = seance.freeSeatsList || [];
                 console.log("Sièges disponibles :", freeSeats);
                 setAvailableSeats(freeSeats); // Mettre à jour la liste des sièges disponibles
             }
@@ -109,20 +106,22 @@ const ReservationPage = () => {
 
     // Gestion de la réservation
     const handleReservation = async () => {
+        if (!user) {
+            setError("Vous devez être connecté pour effectuer une réservation.");
+            return;
+        }
+    
         if (!selectedSeance) {
             setError("Veuillez sélectionner une séance.");
             return;
         }
-        if (!email) {
-            setError("Veuillez entrer une adresse e-mail valide.");
-            return;
-        }
+     
         const payload = {
             seanceId: selectedSeance,
-            userId: 1, // ID utilisateur simulé pour les tests
+            userId: user.id, // ID utilisateur simulé pour les tests
             seats: selectedSeats,
             price: price,
-            email: email,
+         
         };
 
         try {
@@ -167,7 +166,7 @@ const ReservationPage = () => {
     return (
         <div className="reservation-container">
             <h1>Réserver une séance</h1>
-
+        
             {/* Sélection du cinéma */}
             <div className="select-container">
                 <label htmlFor="cinema-select">Cinéma :</label>
@@ -274,17 +273,7 @@ const ReservationPage = () => {
                 </div>
             )}
 
-            <div className="email-input">
-                <label className="email-input">Adresse e-mail :</label>
-                <input
-                    id="email-input"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Entrez votre e-mail"
-                    required
-                />
-            </div>
+     
             {/* Prix et validation */}
             {price > 0 && (
                 <div>

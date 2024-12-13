@@ -26,7 +26,7 @@ const LoginForm = () => {
         password,
       });
       const { token, user } = response.data;
-      localStorage.setItem("jwtToken", token);
+      sessionStorage.setItem("jwtToken", token);
       setUser(user); // Mettre à jour le contexte utilisateur
       setSuccess(true);
       navigate("/"); // Redirection vers l'accueil
