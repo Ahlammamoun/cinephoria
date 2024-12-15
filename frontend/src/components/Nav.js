@@ -15,7 +15,7 @@ function Nav() {
       <ul className="nav-links">
         {user ? (
           <>
-            <li>Welcome,  {user.nom} ({user.role})!</li>
+            <li>Welcome,  {user.nom} ({user.email})!</li>
             <button className="logout" onClick={logout}>Logout</button>
           </>
         ) : (
@@ -23,10 +23,12 @@ function Nav() {
         )}
         <li><a href="/">Home</a></li>
         <li><a href="/reservation">Réservation</a></li>
-        <li>
-          <a href="/commandes">Mes Commandes</a>
-        </li>
-        <li><a href="/films">Movies</a></li>
+        {user && ( // Afficher uniquement si l'utilisateur est connecté
+          <li>
+            <a href="/commandes">Commandes</a>
+          </li>
+        )}
+        <li><a href="/movies">Movies</a></li>
         <li><a href="/contact">Contact</a></li>
       </ul>
     </nav>

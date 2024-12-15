@@ -44,6 +44,13 @@ class Salle
         $this->incidents = new ArrayCollection();
     }
 
+
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
     // Getter et setter pour seances
     public function getSeances(): Collection
     {

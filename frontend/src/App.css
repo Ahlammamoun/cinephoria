@@ -694,3 +694,129 @@ ul {
   font-size: 16px;
   color: #666;
 }
+
+/* Style global pour les selects */
+.select-custom {
+  appearance: none; /* Supprime le style par défaut des navigateurs */
+  width: 100%; /* Largeur complète */
+  max-width: 250px; /* Largeur maximale */
+  padding: 10px 15px; /* Espacement interne */
+  font-size: 16px; /* Taille de police */
+  font-family: Arial, sans-serif;
+  color: black; /* Couleur du texte */
+  background-color: #8d4242; /* Couleur de fond */
+  border: 2px solid black; /* Bordure */
+  border-radius: 8px; /* Coins arrondis */
+  outline: none; /* Retirer le contour par défaut */
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Icône déroulante personnalisée */
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+  margin: 2px 0; /* Espacement autour des filtres */
+}
+
+.select-wrapper::after {
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  transform: translateY(-50%);
+  color: #777;
+  pointer-events: none; /* Empêche l'icône de bloquer les clics */
+}
+
+/* Style au survol */
+.select-custom:hover {
+  border-color: #e50914;
+}
+
+/* Style au focus */
+.select-custom:focus {
+  border-color: #e50914;
+  box-shadow: 0 0 5px rgba(153, 47, 40, 0.5);
+}
+
+/* Style des options */
+.select-custom option {
+  padding: 10px;
+  background-color: #fff;
+  color: #333;
+}
+
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background:#1b1b1b;
+  color: #e50914;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  width: 90%;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+}
+.seance-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.seance-table th,
+.seance-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.seance-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.seance-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.seance-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.reserve-button {
+  background-color: #e50914;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.reserve-button:hover {
+  background-color: #c40812;
+}
+
+p.chargement {
+  color: whitesmoke;
+}
