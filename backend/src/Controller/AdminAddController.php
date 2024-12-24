@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Film;
+use App\Entity\Seance;
+use App\Entity\Qualite;
+use App\Entity\Salle;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,39 +18,35 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class AdminAddController extends AbstractController
 {
     #[Route('/api/add-film', name: 'api_add_film', methods: ['POST'])]
-
-    public function addFilm(Request $request, EntityManagerInterface $entityManager, SessionInterface $session, ): JsonResponse
-    {
+    public function addFilm(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SessionInterface $session
+    ): JsonResponse {
         try {
-
-            // Vérifier si l'utilisateur est connecté
+            // Vérifier si l'utilisateur est connecté et admin
             $user = $session->get('user');
             // var_dump($user);
-            // die();
-
-            if (!$user) {
-                return new JsonResponse(['error' => 'Non authentifié'], 401);
-            }
-
-            // Vérification du rôle ADMIN
-            if (!isset($user['role']) || $user['role'] !== 'admin') {
+            if (!$user || $user['role'] !== 'admin') {
                 return new JsonResponse(['error' => 'Accès interdit, vous devez être administrateur'], 403);
             }
-
+    
             // Vérifie si aujourd'hui est mercredi
             $today = new \DateTime();
             if ($today->format('w') !== '3') { // '3' correspond au mercredi
                 return new JsonResponse(['error' => 'Les films ne peuvent être ajoutés que le mercredi.'], Response::HTTP_FORBIDDEN);
             }
-
+    
             // Décoder les données reçues
             $data = json_decode($request->getContent(), true);
-
-            // Validation des données
-            if (!$data || !isset($data['title'], $data['description'], $data['releaseDate'], $data['minimumAge'], $data['note'], $data['affiche'])) {
-                return new JsonResponse(['error' => 'Données invalides'], Response::HTTP_BAD_REQUEST);
+    
+            // Validation des données principales du film
+            if (
+                !$data || !isset($data['title'], $data['description'], $data['releaseDate'], $data['minimumAge'], $data['note'], $data['affiche'])
+            ) {
+                return new JsonResponse(['error' => 'Données du film incomplètes.'], Response::HTTP_BAD_REQUEST);
             }
-
+    
             // Créer un nouveau film
             $film = new Film();
             $film->setTitle($data['title']);
@@ -55,17 +54,264 @@ class AdminAddController extends AbstractController
             $film->setReleaseDate(new \DateTime($data['releaseDate']));
             $film->setMinimumAge($data['minimumAge']);
             $film->setNote($data['note']);
-
             $film->setAffiche($data['affiche']);
-
-            // Sauvegarder le film
+    
             $entityManager->persist($film);
+    
+            // Ajouter les séances associées
+            if (isset($data['seances']) && is_array($data['seances'])) {
+                foreach ($data['seances'] as $seanceData) {
+                    // Vérifier les données de la séance
+                    if (!isset($seanceData['dateDebut'], $seanceData['dateFin'],  $seanceData['salleId'], $seanceData['qualiteId'])) {
+                        return new JsonResponse(['error' => 'Données de séance invalides.'], Response::HTTP_BAD_REQUEST);
+                    }
+    
+                    // Créer une nouvelle séance
+                    $seance = new Seance();
+                    $seance->setDateDebut(new \DateTime($seanceData['dateDebut']));
+                    $seance->setDateFin(new \DateTime($seanceData['dateFin']));
+                  
+    
+                    // Associer la salle
+                    $salle = $entityManager->getRepository(Salle::class)->find($seanceData['salleId']);
+                    if (!$salle) {
+                        return new JsonResponse(['error' => "Salle ID {$seanceData['salleId']} introuvable."], Response::HTTP_BAD_REQUEST);
+                    }
+                    $seance->setSalle($salle);
+    
+                    // Associer la qualité
+                    $qualite = $entityManager->getRepository(Qualite::class)->find($seanceData['qualiteId']);
+                    if (!$qualite) {
+                        return new JsonResponse(['error' => "Qualité ID {$seanceData['qualiteId']} introuvable."], Response::HTTP_BAD_REQUEST);
+                    }
+                    $seance->setQualite($qualite);
+    
+                    // Associer la séance au film
+                    $seance->setFilms($film);
+                    $entityManager->persist($seance);
+                }
+            }
+    
+            // Sauvegarder le film et les séances
             $entityManager->flush();
-
-            // Retourner une réponse avec succès
-            return new JsonResponse(['success' => 'Film ajouté avec succès'], Response::HTTP_CREATED);
+    
+            return new JsonResponse(['success' => 'Film et séances ajoutés avec succès'], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    
+    #[Route('/api/admin/edit-film-with-seances/{id}', name: 'admin_edit_film_with_seances', methods: ['PUT'])]
+    public function editFilmWithSeances(
+        $id,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        SessionInterface $session
+    ): JsonResponse {
+        // Vérification du rôle ADMIN
+        $user = $session->get('user');
+        if (!$user || $user['role'] !== 'admin') {
+            return new JsonResponse(['error' => 'Accès interdit'], 403);
+        }
+    
+        try {
+            // Récupérer le film
+            $film = $entityManager->getRepository(Film::class)->find($id);
+            if (!$film) {
+                return new JsonResponse(['error' => 'Film non trouvé'], 404);
+            }
+    
+            // Décoder les données envoyées
+            $data = json_decode($request->getContent(), true);
+    
+            // Validation des données principales du film
+            if (!isset($data['title'], $data['description'], $data['releaseDate'], $data['minimumAge'], $data['note'], $data['affiche'])) {
+                return new JsonResponse(['error' => 'Données du film incomplètes.'], 400);
+            }
+    
+            // Mise à jour des informations du film
+            $film->setTitle($data['title']);
+            $film->setDescription($data['description']);
+            $film->setReleaseDate(new \DateTime($data['releaseDate']));
+            $film->setMinimumAge($data['minimumAge']);
+            $film->setNote($data['note']);
+            $film->setAffiche($data['affiche']);
+    
+            // Mise à jour des séances associées
+            if (isset($data['seances']) && is_array($data['seances'])) {
+                foreach ($data['seances'] as $seanceData) {
+                    // Vérifier si la séance existe
+                    $seance = $entityManager->getRepository(Seance::class)->find($seanceData['id']);
+                    if (!$seance || !$film->getSeances()->contains($seance)) {
+                        return new JsonResponse(['error' => "Séance ID {$seanceData['id']} introuvable."], 404);
+                    }
+    
+                    // Mise à jour des informations de la séance
+                    if (isset($seanceData['dateDebut'])) {
+                        $seance->setDateDebut(new \DateTime($seanceData['dateDebut']));
+                    }
+                    if (isset($seanceData['dateFin'])) {
+                        $seance->setDateFin(new \DateTime($seanceData['dateFin']));
+                    }
+                 
+    
+                    // Mise à jour de la salle
+                    if (isset($seanceData['salleId'])) {
+                        $salle = $entityManager->getRepository(Salle::class)->find($seanceData['salleId']);
+                        if ($salle) {
+                            $seance->setSalle($salle);
+                        } else {
+                            return new JsonResponse(['error' => "Salle ID {$seanceData['salleId']} introuvable."], 404);
+                        }
+                    }
+    
+                    // Mise à jour de la qualité
+                    if (isset($seanceData['qualiteId'])) {
+                        $qualite = $entityManager->getRepository(Qualite::class)->find($seanceData['qualiteId']);
+                        if ($qualite) {
+                            $seance->setQualite($qualite);
+                        } else {
+                            return new JsonResponse(['error' => "Qualité ID {$seanceData['qualiteId']} introuvable."], 404);
+                        }
+                    }
+                }
+            }
+    
+            // Sauvegarde dans la base de données
+            $entityManager->flush();
+    
+            // Préparer la réponse avec les informations mises à jour
+            $seances = [];
+            foreach ($film->getSeances() as $seance) {
+                $seances[] = [
+                    'id' => $seance->getId(),
+                    'dateDebut' => $seance->getDateDebut()->format('Y-m-d\TH:i'),
+                    'dateFin' => $seance->getDateFin()->format('Y-m-d\TH:i'),
+                    'salle' => $seance->getSalle() ? $seance->getSalle()->getId() : null,
+                    'qualite' => $seance->getQualite() ? $seance->getQualite()->getId() : null,
+                ];
+            }
+
+            return new JsonResponse([
+                'success' => 'Film et séances modifiés avec succès',
+                'film' => [
+                    'title' => $film->getTitle(),
+                    'description' => $film->getDescription(),
+                    'releaseDate' => $film->getReleaseDate()->format('Y-m-d'),
+                    'minimumAge' => $film->getMinimumAge(),
+                    'note' => $film->getNote(),
+                    'affiche' => $film->getAffiche(),
+                ],
+                'seances' => $seances,
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+    
+    
+
+    #[Route('/api/admin/delete-film/{id}', name: 'admin_delete_film', methods: ['DELETE'])]
+    public function deleteFilm(
+        $id,
+        EntityManagerInterface $entityManager,
+        SessionInterface $session
+    ): JsonResponse {
+        // Vérifier si l'utilisateur est un admin
+        $user = $session->get('user');
+        if (!$user || $user['role'] !== 'admin') {
+            return new JsonResponse(['error' => 'Accès interdit'], 403);
+        }
+    
+        try {
+            // Récupérer le film
+            $film = $entityManager->getRepository(Film::class)->find($id);
+            if (!$film) {
+                return new JsonResponse(['error' => 'Film non trouvé'], 404);
+            }
+    
+            // Supprimer les séances associées
+            $seances = $film->getSeances();
+            foreach ($seances as $seance) {
+                $entityManager->remove($seance);
+            }
+    
+            // Supprimer le film
+            $entityManager->remove($film);
+    
+            // Appliquer les modifications
+            $entityManager->flush();
+    
+            return new JsonResponse(['success' => 'Film et ses séances supprimés avec succès']);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => $e->getMessage()], 500);
+        }
+    }
+    
+
+
+    #[Route('/api/admin/list-films', name: 'admin_list_films', methods: ['GET'])]
+    public function listFilms(EntityManagerInterface $entityManager): JsonResponse
+    {
+        $films = $entityManager->getRepository(Film::class)->findAll();
+    
+        $data = array_map(function ($film) {
+            return [
+                'id' => $film->getId(),
+                'title' => $film->getTitle(),
+            ];
+        }, $films);
+    
+        return new JsonResponse($data);
+    }
+    
+
+    #[Route('/api/admin/get-film-with-seances/{id}', name: 'admin_get_film_with_seances', methods: ['GET'])]
+    public function getFilmWithSeances(
+        $id,
+        EntityManagerInterface $entityManager,
+        SessionInterface $session
+    ): JsonResponse {
+        // Vérification du rôle ADMIN
+        $user = $session->get('user');
+        if (!$user || $user['role'] !== 'admin') {
+            return new JsonResponse(['error' => 'Accès interdit'], 403);
+        }
+    
+        // Récupérer le film
+        $film = $entityManager->getRepository(Film::class)->find($id);
+        if (!$film) {
+            return new JsonResponse(['error' => 'Film non trouvé'], 404);
+        }
+    
+        // Préparer les données des séances
+        $seances = [];
+        foreach ($film->getSeances() as $seance) {
+            $seances[] = [
+                'id' => $seance->getId(),
+                'dateDebut' => $seance->getDateDebut()->format('Y-m-d\TH:i'),
+                'dateFin' => $seance->getDateFin()->format('Y-m-d\TH:i'),
+             
+                'salle' => $seance->getSalle() ? $seance->getSalle()->getId() : null,
+                'qualite' => $seance->getQualite() ? $seance->getQualite()->getId() : null,
+            ];
+        }
+    
+        // Retourner les informations du film et des séances
+        return new JsonResponse([
+            'title' => $film->getTitle(),
+            'description' => $film->getDescription(),
+            'releaseDate' => $film->getReleaseDate()->format('Y-m-d'),
+            'minimumAge' => $film->getMinimumAge(),
+            'note' => $film->getNote(),
+            'affiche' => $film->getAffiche(),
+            'seances' => $seances,
+        ]);
+    }
+    
+    
+
+
+
+
 }
