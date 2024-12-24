@@ -105,6 +105,7 @@ const MoviesList = () => {
       </h1>
 
       {/* Filtres par cinéma */}
+      <div className="filter">
       <div className="select-wrapper">
         <select
           className="select-custom"
@@ -145,6 +146,7 @@ const MoviesList = () => {
           onChange={(e) => setDate(e.target.value)}
         />
       </div>
+      </div>
 
       {/* Liste des films */}
       <div className="movie-carousel">
@@ -156,7 +158,7 @@ const MoviesList = () => {
               style={{ cursor: "pointer" }}
               onClick={() => openPopup(movie)} // Ouvrir la popup au clic sur le film
             />
-            <p>{movie.title}</p>
+            <h2>{movie.title}</h2>
             <p className="movie-description">
               {selectedMovie === movie.id
                 ? movie.description

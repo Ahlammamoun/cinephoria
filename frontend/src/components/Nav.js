@@ -25,10 +25,11 @@ function Nav() {
         <li><a href="/reservation">Réservation</a></li>
         {user && ( // Afficher uniquement si l'utilisateur est connecté
           <li>
-            <a href="/commandes">Commandes</a>
+            <a href="/commandes">Espaces</a>
           </li>
         )}
         <li><a href="/movies">Movies</a></li>
+        <li><a href="/addFilm">AddFilm</a></li>
         <li><a href="/contact">Contact</a></li>
       </ul>
     </nav>

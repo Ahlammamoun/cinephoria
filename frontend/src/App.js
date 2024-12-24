@@ -10,6 +10,7 @@ import { UserProvider } from "./components/UserContext";
 import ReservationForm from "./components/ReservationForm";
 import Commandes from "./components/Commandes";
 import MoviesList from "./components/MoviesList";
+import AddFilm from "./components/AddFilm";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/login" element={<LoginForm />} />
             <Route path="/reservation" element={<ReservationForm />} />
             <Route path="/commandes" element={<Commandes />} />
+            <Route path="/addFilm" element={<AddFilm />} />
           </Routes>
           <footer>
             <Footer />

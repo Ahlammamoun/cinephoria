@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 class FilmController extends AbstractController
 {
-    #[Route('api/films', name: 'api_films', methods: ['GET'])]
+    #[Route('/api/films', name: 'api_films', methods: ['GET'])]
     public function getFilms(
         FilmRepository $filmRepository, 
         GenreRepository $genreRepository, 
