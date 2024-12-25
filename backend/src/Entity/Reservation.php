@@ -18,8 +18,8 @@ class Reservation
     private ?int $nombreSieges = null;
 
     #[ORM\Column(type: 'json', nullable: true)]
-    private array $siegesReserves = []; 
-    
+    private array $siegesReserves = [];
+
 
 
     #[ORM\Column]
@@ -95,4 +95,19 @@ class Reservation
 
         return $this;
     }
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateReservation = null;
+    
+    public function getDateReservation(): ?\DateTimeInterface
+    {
+        return $this->dateReservation;
+    }
+    
+    public function setDateReservation(\DateTimeInterface $dateReservation): static
+    {
+        $this->dateReservation = $dateReservation;
+        return $this;
+    }
+    
+
 }

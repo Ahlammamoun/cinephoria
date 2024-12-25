@@ -35,7 +35,7 @@ const SalleManager = () => {
                 const response = await fetch("http://localhost:8000/api/admin/list-qualites");
                 const data = await response.json();
                 setQualites(data); // Stocker la liste des qualités
-                console.log(data);
+                // console.log(data);
             } catch (err) {
                 setMessage({ type: "error", text: "Erreur de chargement des qualités." });
             }
@@ -193,7 +193,7 @@ const SalleManager = () => {
                 {salles.map((salle) => (
                     <li key={salle.id} className="salle-item">
                         <strong>Numéro:</strong> {salle.id} |{" "}
-                        <strong>Capacité Totale:</strong> {salle.capacite} |{" "}
+                        <strong>Capacité Totale:</strong> {salle.capaciteTotale} |{" "}
                         <strong>PMR:</strong> {salle.capacitePMR} |{" "}
                         <strong>Qualité:</strong> {salle.qualite ? salle.qualite.nom : "Non définie"} {/* Corrigé ici */}
                         <button onClick={() => handleEdit(salle)}>Modifier</button>

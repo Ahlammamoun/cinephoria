@@ -310,11 +310,16 @@ class AdminAddController extends AbstractController
     }
 
     #[Route('/api/admin/add-salle', name: 'admin_add_salle', methods: ['POST'])]
-    public function addSalle(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function addSalle(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): JsonResponse
     {
+        // Vérification du rôle ADMIN
+        $user = $session->get('user');
+        if (!$user || $user['role'] !== 'admin') {
+            return new JsonResponse(['error' => 'Accès interdit'], 403);
+        }
         // Décoder les données reçues
         $data = json_decode($request->getContent(), true);
-    
+
         // Validation des données reçues
         if (
             !isset($data['numero'], $data['capaciteTotale'], $data['capacitePMR'], $data['qualite'])
@@ -325,50 +330,55 @@ class AdminAddController extends AbstractController
         ) {
             return new JsonResponse(['error' => 'Données invalides'], 400);
         }
-    
+
         // Vérifier si la qualité existe dans la base
         $qualite = $entityManager->getRepository(Qualite::class)->find($data['qualite']);
         if (!$qualite) {
             return new JsonResponse(['error' => 'Qualité non trouvée'], 400);
         }
-    
+
         try {
             // Créer une nouvelle salle
             $salle = new Salle();
-            $salle->setNumero((int)$data['numero']);
-            $salle->setCapaciteTotale((int)$data['capaciteTotale']);
-            $salle->setCapacitePMR((int)$data['capacitePMR']);
+            $salle->setNumero((int) $data['numero']);
+            $salle->setCapaciteTotale((int) $data['capaciteTotale']);
+            $salle->setCapacitePMR((int) $data['capacitePMR']);
             $salle->setQualite($qualite);
-    
+
             // Sauvegarder dans la base de données
             $entityManager->persist($salle);
             $entityManager->flush();
-    
+
             return new JsonResponse(['success' => 'Salle ajoutée avec succès'], 201);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => 'Erreur lors de l\'ajout de la salle.'], 500);
         }
     }
-    
+
 
     #[Route('/api/admin/edit-salle/{id}', name: 'admin_edit_salle', methods: ['PUT'])]
-    public function editSalle($id, Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function editSalle($id, Request $request, EntityManagerInterface $entityManager, SessionInterface $session): JsonResponse
     {
+        // Vérification du rôle ADMIN
+        $user = $session->get('user');
+        if (!$user || $user['role'] !== 'admin') {
+            return new JsonResponse(['error' => 'Accès interdit'], 403);
+        }
         // Récupérer la salle à modifier
         $salle = $entityManager->getRepository(Salle::class)->find($id);
         if (!$salle) {
             return new JsonResponse(['error' => 'Salle non trouvée'], 404);
         }
-    
+
         // Décoder les données reçues
         $data = json_decode($request->getContent(), true);
-    
+
         try {
             // Mise à jour des champs de la salle
             $salle->setCapaciteTotale($data['capaciteTotale'] ?? $salle->getCapaciteTotale());
             $salle->setCapacitePMR($data['capacitePMR'] ?? $salle->getCapacitePMR());
             $salle->setNumero($data['numero'] ?? $salle->getNumero());
-    
+
             // Mise à jour de la qualité
             if (isset($data['qualite'])) {
                 $qualite = $entityManager->getRepository(Qualite::class)->find($data['qualite']);
@@ -377,19 +387,24 @@ class AdminAddController extends AbstractController
                 }
                 $salle->setQualite($qualite);
             }
-    
+
             // Enregistrement des modifications
             $entityManager->flush();
-    
+
             return new JsonResponse(['success' => 'Salle modifiée avec succès']);
         } catch (\Exception $e) {
             return new JsonResponse(['error' => 'Erreur lors de la mise à jour.'], 500);
         }
     }
-    
+
     #[Route('/api/admin/delete-salle/{id}', name: 'admin_delete_salle', methods: ['DELETE'])]
-    public function deleteSalle($id, EntityManagerInterface $entityManager): JsonResponse
+    public function deleteSalle($id, EntityManagerInterface $entityManager, SessionInterface $session): JsonResponse
     {
+        // Vérification du rôle ADMIN
+        $user = $session->get('user');
+        if (!$user || $user['role'] !== 'admin') {
+            return new JsonResponse(['error' => 'Accès interdit'], 403);
+        }
         $salle = $entityManager->getRepository(Salle::class)->find($id);
         if (!$salle) {
             return new JsonResponse(['error' => 'Salle non trouvée'], 404);
@@ -426,7 +441,7 @@ class AdminAddController extends AbstractController
     public function listQualites(EntityManagerInterface $entityManager): JsonResponse
     {
         $qualites = $entityManager->getRepository(Qualite::class)->findAll();
-    
+
         $data = array_map(function ($qualite) {
             return [
                 'id' => $qualite->getId(),
@@ -434,10 +449,44 @@ class AdminAddController extends AbstractController
                 'prix' => $qualite->getPrix(),
             ];
         }, $qualites);
-    
+
         return new JsonResponse($data);
     }
-    
+
+    #[Route('/api/admin/reservations-stats', name: 'admin_reservations_stats', methods: ['GET'])]
+    public function getReservationStats(Request $request, EntityManagerInterface $entityManager, SessionInterface $session): JsonResponse
+    {
+
+        // Vérification du rôle ADMIN
+        $user = $session->get('user');
+        if (!$user || $user['role'] !== 'admin') {
+            return new JsonResponse(['error' => 'Accès interdit'], 403);
+        }
+
+        // Calculer la date 7 jours avant aujourd'hui
+        $startDate = new \DateTime('-7 days');
+        $endDate = new \DateTime('now');
+
+        // Récupérer les statistiques des réservations
+        $query = $entityManager->createQuery(
+            'SELECT f.title as film, 
+                    COUNT(r.id) as reservations, 
+                    COALESCE(SUM(r.prixTotal), 0) as chiffreAffaire
+             FROM App\Entity\Reservation r
+             JOIN r.seances s
+             JOIN s.films f
+             WHERE r.dateReservation BETWEEN :startDate AND :endDate
+             GROUP BY f.id
+             ORDER BY reservations DESC'
+        )
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate);
+
+
+        $stats = $query->getResult();
+
+        return new JsonResponse($stats);
+    }
 
 
 }

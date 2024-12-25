@@ -19,6 +19,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -28,6 +29,7 @@ button.logout {
   background-color: #1b1b1b;
   color: #e50914;
 }
+
 /* Navigation styles */
 .nav-container {
   display: flex;
@@ -67,17 +69,20 @@ button.logout {
 .nav-links a:hover {
   color: #83050c;
 }
+
 a.logo {
   color: #e50914;
   text-decoration: none;
 }
+
 /* Home Page styles */
 .home-container {
   background-color: #1b1b1b;
   color: #e50914;
   padding: 20px;
   text-align: center;
-  min-height: calc(75vh - 80px); /* Ensure it takes available space */
+  min-height: calc(75vh - 80px);
+  /* Ensure it takes available space */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -87,9 +92,11 @@ a.logo {
 
 .movie-carousel {
   display: flex;
-  flex-wrap: wrap; /* Permet de passer sur une nouvelle ligne si l'espace est insuffisant */
+  flex-wrap: wrap;
+  /* Permet de passer sur une nouvelle ligne si l'espace est insuffisant */
   justify-content: center;
-  gap: 15px; /* Ajoute un espacement entre les films */
+  gap: 15px;
+  /* Ajoute un espacement entre les films */
 }
 
 .movie-item {
@@ -105,13 +112,16 @@ a.logo {
 }
 
 .movie-item:hover {
-  transform: scale(1.05); /* Effet zoom au survol */
+  transform: scale(1.05);
+  /* Effet zoom au survol */
 }
 
 .movie-item img {
   width: 100%;
-  height: 290px; /* Définissez la hauteur souhaitée */
-  object-fit: cover; /* Remplit le conteneur en recadrant l'image si nécessaire */
+  height: 290px;
+  /* Définissez la hauteur souhaitée */
+  object-fit: cover;
+  /* Remplit le conteneur en recadrant l'image si nécessaire */
   border-radius: 5px;
 }
 
@@ -120,10 +130,12 @@ a.logo {
   font-size: 14px;
   color: white;
 }
+
 .movie-description {
   font-size: 14px;
   color: #555;
 }
+
 .movie-description span {
   color: blue;
   cursor: pointer;
@@ -168,11 +180,11 @@ a.logo {
   font-size: 14px;
   outline: none;
   width: 88%;
-  padding:10px;
+  padding: 10px;
   transition: border-color 0.3s ease;
   display: block;
   margin-bottom: 8px;
-  
+
 }
 
 .register-container input:focus,
@@ -212,18 +224,21 @@ a.logo {
   color: #4caf50;
   font-weight: bold;
 }
+
 li.register {
   list-style-type: none;
   background-color: #e50914;
 
 }
-a.register{
+
+a.register {
   text-decoration: dashed;
   color: white;
 }
+
 /* LoginForm styles */
 .login-container {
-  background-color: #1b1b1b; 
+  background-color: #1b1b1b;
   color: white;
   padding: 30px;
   border: solid 5px rgba(185, 16, 16, 0.2);
@@ -309,9 +324,11 @@ a.register{
   min-height: 36em;
   font-family: Arial, sans-serif;
 }
+
 input#email-input {
   width: 47%;
 }
+
 .reservation-container h1 {
   color: #e50914;
   text-align: center;
@@ -392,9 +409,11 @@ input#email-input {
   margin-bottom: 16px;
 }
 
-.email-input, .select-container {
+.email-input,
+.select-container {
   margin-bottom: 16px;
 }
+
 /* Style des labels */
 .email-input label,
 .select-container label {
@@ -404,6 +423,7 @@ input#email-input {
   font-weight: bold;
   color: rgb(219, 206, 206);
 }
+
 /* Champs input */
 .styled-input {
   width: 100%;
@@ -452,6 +472,7 @@ input#email-input {
   outline: none;
   box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
+
 /* Groupes de champs */
 .form-group {
   margin-bottom: 16px;
@@ -482,6 +503,7 @@ input#email-input {
 .register-link a:hover {
   text-decoration: underline;
 }
+
 /* Style personnalisé pour les selects */
 .styled-select {
   width: 100%;
@@ -490,7 +512,8 @@ input#email-input {
   font-size: 16px;
   border-radius: 8px;
   background-color: #2a2a2a;
-  appearance: none; /* Supprime la flèche par défaut sur certains navigateurs */
+  appearance: none;
+  /* Supprime la flèche par défaut sur certains navigateurs */
   outline: none;
   cursor: pointer;
   color: whitesmoke;
@@ -660,7 +683,7 @@ ul {
 }
 
 .reservation-item h3 {
-  
+
   margin-bottom: 10px;
 }
 
@@ -694,17 +717,27 @@ ul {
 
 /* Style global pour les selects */
 .select-custom {
-  appearance: none; /* Supprime le style par défaut des navigateurs */
-  width: 100%; /* Largeur complète */
-  max-width: 250px; /* Largeur maximale */
-  padding: 10px 15px; /* Espacement interne */
-  font-size: 16px; /* Taille de police */
+  appearance: none;
+  /* Supprime le style par défaut des navigateurs */
+  width: 100%;
+  /* Largeur complète */
+  max-width: 250px;
+  /* Largeur maximale */
+  padding: 10px 15px;
+  /* Espacement interne */
+  font-size: 16px;
+  /* Taille de police */
   font-family: Arial, sans-serif;
-  color: black; /* Couleur du texte */
-  background-color: #8d4242; /* Couleur de fond */
-  border: 2px solid black; /* Bordure */
-  border-radius: 8px; /* Coins arrondis */
-  outline: none; /* Retirer le contour par défaut */
+  color: black;
+  /* Couleur du texte */
+  background-color: #8d4242;
+  /* Couleur de fond */
+  border: 2px solid black;
+  /* Bordure */
+  border-radius: 8px;
+  /* Coins arrondis */
+  outline: none;
+  /* Retirer le contour par défaut */
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -713,7 +746,8 @@ ul {
 .select-wrapper {
   position: relative;
   display: inline-block;
-  margin: 2px 0; /* Espacement autour des filtres */
+  margin: 2px 0;
+  /* Espacement autour des filtres */
 }
 
 .select-wrapper::after {
@@ -722,7 +756,8 @@ ul {
   right: 15px;
   transform: translateY(-50%);
   color: #777;
-  pointer-events: none; /* Empêche l'icône de bloquer les clics */
+  pointer-events: none;
+  /* Empêche l'icône de bloquer les clics */
 }
 
 /* Style au survol */
@@ -757,7 +792,7 @@ ul {
 }
 
 .popup-content {
-  background:#1b1b1b;
+  background: #1b1b1b;
   color: #e50914;
   padding: 20px;
   border-radius: 10px;
@@ -775,6 +810,7 @@ ul {
   font-size: 24px;
   cursor: pointer;
 }
+
 .seance-table {
   width: 100%;
   border-collapse: collapse;
@@ -831,23 +867,26 @@ body {
 
 .movies-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Grille responsive */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  /* Grille responsive */
   gap: 20px;
   padding: 20px;
 }
 
 /* Carte de film */
 .movie-card {
-  background-color:#2a2a2a ;
+  background-color: #2a2a2a;
 
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Ombre légère */
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .movie-card:hover {
-  transform: translateY(-5px); /* Légère élévation au survol */
+  transform: translateY(-5px);
+  /* Légère élévation au survol */
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -862,7 +901,8 @@ body {
 .movie-card h2 {
   font-size: 1.2em;
   margin: 10px;
-  color: #e50914; /* Couleur rouge Netflix */
+  color: #e50914;
+  /* Couleur rouge Netflix */
 }
 
 .movie-card p {
@@ -951,7 +991,7 @@ body {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
-  background-color: black;
+  background-color: #1b1b1b;
   border: solid 2px whitesmoke;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -1151,6 +1191,7 @@ button.delete:hover {
 .seance-item button:hover {
   background-color: #c82333;
 }
+
 select.admin {
   /* height: 35%; */
   padding: 0px;
@@ -1214,6 +1255,19 @@ select.admin {
 
 .message.error {
   color: red;
+}
+
+
+.salle-container {
+  border: solid 2px white;
+  border-radius: 2%;
+}
+
+h1.graphique {
+
+  text-align: center;
+  color: #e50914;
+  margin-bottom: 13%;
 }
 
 /* Adaptabilité mobile */

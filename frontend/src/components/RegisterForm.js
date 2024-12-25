@@ -1,15 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import axios from "axios";
-
+import { UserContext } from "./UserContext";
 
 const RegisterForm = () => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const [prenom, setPrenom] = useState("");
   const [nom, setNom] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState("user"); // Définir "user" par défaut
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+  const { user } = useContext(UserContext); // Contexte utilisateur
+
+  // Vérifier si l'utilisateur est admin et ajuster le rôle
+  useEffect(() => {
+    if (user && user.role === "admin") {
+      setRole(""); // Autoriser le choix pour admin
+    } else {
+      setRole("user"); // Par défaut "user"
+    }
+  }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -85,10 +95,13 @@ const RegisterForm = () => {
             onChange={(e) => setRole(e.target.value)}
             required
           >
-            <option value="">Select a role</option>
             <option value="user">User</option>
-            <option value="admin">Admin</option>
-            <option value="admin">Employe</option>
+            {user && user.role === "admin" && (
+              <>
+                <option value="admin">Admin</option>
+                <option value="employe">Employe</option>
+              </>
+            )}
           </select>
         </div>
         <button type="submit">Register</button>

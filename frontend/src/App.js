@@ -14,7 +14,7 @@ import AddFilm from "./components/AddFilm";
 import EditFilm from "./components/EditFilm";
 import SelectFilmToEdit from "./components/SelectFilmToEdit";
 import SalleList from "./components/SalleList";
-
+import Dashboard from "./components/Dashboard";
 
 function App() {
   return (
@@ -39,6 +39,7 @@ function App() {
             <Route path="/editFilm" element={<EditFilm />} />
             <Route path="/selectFilmToEdit" element={<SelectFilmToEdit />} />
             <Route path="/salleList" element={<SalleList />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
           <footer>
             <Footer />

@@ -41,6 +41,8 @@ function Nav() {
               <option value="/addFilm">Ajouter un Film</option>
               <option value="/selectFilmToEdit">Modifier/Supprimer un Film</option>
               <option value="/salleList">Salle</option>
+              <option value="/register">Creation de compte</option>
+              <option value="/dashboard">Dashboard</option>
             </select>
           </li>
         )}
