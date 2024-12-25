@@ -89,7 +89,7 @@ class Salle
 
         return $this;
     }
-    
+
     public function getNumero(): ?int
     {
         return $this->numero;
@@ -103,6 +103,18 @@ class Salle
     }
 
 
+    public function getCapacitePMR(): ?int
+    {
+        return $this->capacitePMR;
+    }
+
+    // Setter pour numero (facultatif)
+    public function setCapacitePMR(int $capacitePMR): self
+    {
+        $this->capacitePMR = $capacitePMR;
+        return $this;
+    }
+
 
 
     public function getCapaciteTotale(): ?int
@@ -114,6 +126,20 @@ class Salle
     public function setCapaciteTotale(int $capaciteTotale): self
     {
         $this->capaciteTotale = $capaciteTotale;
+        return $this;
+    }
+
+
+    // Getter pour la qualité
+    public function getQualite(): ?Qualite
+    {
+        return $this->qualite;
+    }
+
+    // Setter pour la qualité
+    public function setQualite(?Qualite $qualite): self
+    {
+        $this->qualite = $qualite;
         return $this;
     }
 

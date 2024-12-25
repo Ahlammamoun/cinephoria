@@ -88,6 +88,7 @@ const RegisterForm = () => {
             <option value="">Select a role</option>
             <option value="user">User</option>
             <option value="admin">Admin</option>
+            <option value="admin">Employe</option>
           </select>
         </div>
         <button type="submit">Register</button>

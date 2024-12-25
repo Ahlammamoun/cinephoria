@@ -7,6 +7,7 @@ export const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  
 
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export const UserProvider = ({ children }) => {
     try {
       await axios.post("http://localhost:8000/api/logout", {}, { withCredentials: true });
       setUser(null); // Supprime l'état utilisateur
+
     } catch (error) {
       console.error("Erreur lors de la déconnexion :", error);
     }

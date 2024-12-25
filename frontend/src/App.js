@@ -11,6 +11,10 @@ import ReservationForm from "./components/ReservationForm";
 import Commandes from "./components/Commandes";
 import MoviesList from "./components/MoviesList";
 import AddFilm from "./components/AddFilm";
+import EditFilm from "./components/EditFilm";
+import SelectFilmToEdit from "./components/SelectFilmToEdit";
+import SalleList from "./components/SalleList";
+
 
 function App() {
   return (
@@ -32,6 +36,9 @@ function App() {
             <Route path="/reservation" element={<ReservationForm />} />
             <Route path="/commandes" element={<Commandes />} />
             <Route path="/addFilm" element={<AddFilm />} />
+            <Route path="/editFilm" element={<EditFilm />} />
+            <Route path="/selectFilmToEdit" element={<SelectFilmToEdit />} />
+            <Route path="/salleList" element={<SalleList />} />
           </Routes>
           <footer>
             <Footer />
