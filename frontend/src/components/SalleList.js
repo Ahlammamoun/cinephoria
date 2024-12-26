@@ -8,7 +8,8 @@ const SalleManager = () => {
         capaciteTotale: "",
         capacitePMR: "",
         qualite: "",
-    }); // Formulaire pour ajouter ou modifier
+        reparation: "", // Ajout du champ réparations
+    });
     const [message, setMessage] = useState(null); // Message d'état
     const [editing, setEditing] = useState(false); // Mode édition
     const [qualites, setQualites] = useState([]);
@@ -28,21 +29,18 @@ const SalleManager = () => {
         fetchSalles();
     }, []);
 
-
     useEffect(() => {
         const fetchQualites = async () => {
             try {
                 const response = await fetch("http://localhost:8000/api/admin/list-qualites");
                 const data = await response.json();
-                setQualites(data); // Stocker la liste des qualités
-                // console.log(data);
+                setQualites(data);
             } catch (err) {
                 setMessage({ type: "error", text: "Erreur de chargement des qualités." });
             }
         };
         fetchQualites();
     }, []);
-
 
     // Gérer les changements dans le formulaire
     const handleChange = (e) => {
@@ -84,6 +82,7 @@ const SalleManager = () => {
                     capaciteTotale: "",
                     capacitePMR: "",
                     qualite: "",
+                    reparation: "",
                 });
                 setEditing(false); // Quitter le mode édition
             } else {
@@ -166,6 +165,16 @@ const SalleManager = () => {
                 </label>
 
                 <label>
+                    Réparations :
+                    <textarea
+                        name="reparation"
+                        value={formData.reparation}
+                        onChange={handleChange}
+                        rows="3"
+                    />
+                </label>
+
+                <label>
                     Qualité :
                     <select
                         name="qualite"
@@ -182,7 +191,6 @@ const SalleManager = () => {
                     </select>
                 </label>
 
-
                 <button type="submit">
                     {editing ? "Modifier la Salle" : "Ajouter une Salle"}
                 </button>
@@ -195,7 +203,11 @@ const SalleManager = () => {
                         <strong>Numéro:</strong> {salle.id} |{" "}
                         <strong>Capacité Totale:</strong> {salle.capaciteTotale} |{" "}
                         <strong>PMR:</strong> {salle.capacitePMR} |{" "}
-                        <strong>Qualité:</strong> {salle.qualite ? salle.qualite.nom : "Non définie"} {/* Corrigé ici */}
+                        <strong>Qualité:</strong> {salle.qualite ? salle.qualite.nom : "Non définie"} |{" "}
+                        <strong>Réparation:</strong>
+                        <span style={{ color: salle.reparation ? "red" : "green" }}>
+                            {salle.reparation || "Aucune"}
+                        </span>
                         <button onClick={() => handleEdit(salle)}>Modifier</button>
                         <button
                             style={{ backgroundColor: "red", color: "white" }}
@@ -206,7 +218,6 @@ const SalleManager = () => {
                     </li>
                 ))}
             </ul>
-
         </div>
     );
 };

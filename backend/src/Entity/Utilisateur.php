@@ -8,10 +8,11 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur implements UserInterface,  PasswordAuthenticatedUserInterface
+class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,6 +20,8 @@ class Utilisateur implements UserInterface,  PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "L'email ne peut pas être vide.")]
+    #[Assert\Email(message: "L'email '{{ value }}' n'est pas valide.")]
     private ?string $login = null;
 
     #[ORM\Column(length: 255)]
@@ -32,6 +35,9 @@ class Utilisateur implements UserInterface,  PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 255)]
     private ?string $role = null;
+    #[ORM\Column(type: 'boolean')]
+    private bool $requiresPasswordChange = false;
+
 
     /**
      * @var Collection<int, Reservation>
@@ -69,7 +75,7 @@ class Utilisateur implements UserInterface,  PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-        
+
         return $this;
     }
 
@@ -109,6 +115,19 @@ class Utilisateur implements UserInterface,  PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    // Propriété pour savoir si l'utilisateur doit changer son mot de passe
+    public function getRequiresPasswordChange(): bool
+    {
+        return $this->requiresPasswordChange;
+    }
+
+    public function setRequiresPasswordChange(bool $requiresPasswordChange): static
+    {
+        $this->requiresPasswordChange = $requiresPasswordChange;
+        return $this;
+    }
+
+
     /**
      * @return Collection<int, Reservation>
      */
@@ -139,7 +158,7 @@ class Utilisateur implements UserInterface,  PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    
+
     public function getUserIdentifier(): string
     {
         // Utilisez `login` comme identifiant principal

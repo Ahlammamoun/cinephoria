@@ -38,6 +38,10 @@ class Salle
     #[ORM\ManyToOne(inversedBy: 'salle')]
     private ?Cinema $cinema = null;
 
+    // Nouvelle propriété pour stocker les réparations
+    #[ORM\Column(type: "text", nullable: true)]
+    private ?string $reparations = null;
+
     public function __construct()
     {
         $this->seances = new ArrayCollection();
@@ -142,5 +146,16 @@ class Salle
         $this->qualite = $qualite;
         return $this;
     }
+// Getter pour les réparations
+    public function getReparations(): ?string
+    {
+        return $this->reparations;
+    }
 
+    // Setter pour les réparations
+    public function setReparations(?string $reparations): self
+    {
+        $this->reparations = $reparations;
+        return $this;
+    }
 }

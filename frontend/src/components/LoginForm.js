@@ -31,9 +31,13 @@ const LoginForm = () => {
       setSuccess(true);
       navigate("/"); // Redirection vers l'accueil
     } catch (err) {
-      setError(err.response?.data?.error || "Login failed. Please try again.");
-      setSuccess(false);
-    }
+      if (err.response?.status === 423) {
+          // Code 423 = mot de passe temporaire, redirection vers changement de mot de passe
+          navigate("/change-password");
+      } else {
+          setError(err.response?.data?.error || "Erreur lors de la connexion.");
+      }
+  }
   };
 
   return (
@@ -66,6 +70,9 @@ const LoginForm = () => {
         <p className="register-link">
           Pas encore de compte ? <a href="/register">S'inscrire</a>
         </p>
+        <button onClick={() => navigate("/forgot-password")}>
+                Mot de passe oublié ?
+            </button>
       </form>
     </div>
   );

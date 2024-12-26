@@ -15,11 +15,17 @@ import EditFilm from "./components/EditFilm";
 import SelectFilmToEdit from "./components/SelectFilmToEdit";
 import SalleList from "./components/SalleList";
 import Dashboard from "./components/Dashboard";
+import ForgotPassword from "./components/ForgotPassword";
+import ChangePassword from "./components/ChangePassword";
+import SeancesMobile from "./components/SeancesMobile";
+
 
 function App() {
   return (
-    <UserProvider>
-      <Router>
+
+    <Router>
+      <UserProvider>
+
         <div className="App">
           <header className="App-header">
             <nav>
@@ -40,13 +46,17 @@ function App() {
             <Route path="/selectFilmToEdit" element={<SelectFilmToEdit />} />
             <Route path="/salleList" element={<SalleList />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/change-password" element={<ChangePassword />} />
+            <Route path="/seancesMobile" element={<SeancesMobile />} />
           </Routes>
           <footer>
             <Footer />
           </footer>
         </div>
-      </Router>
-    </UserProvider>
+
+      </UserProvider>
+    </Router>
   );
 }
 

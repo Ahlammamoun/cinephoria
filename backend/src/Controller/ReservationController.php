@@ -225,6 +225,7 @@ class ReservationController extends AbstractController
         $reservation->setNombreSieges(count($seats));
         $reservation->setSiegesReserves($seats);
         $reservation->setPrixTotal($price);
+        $reservation->setDateReservation(new \DateTime()); // Ajoute la date actuelle
 
         // Sauvegarder la réservation
         $entityManager->persist($reservation);
@@ -294,5 +295,120 @@ class ReservationController extends AbstractController
         return new JsonResponse(['reservations' => $reservationsData], JsonResponse::HTTP_OK);
     }
 
+
+
+    #[Route('/api/commandes/{id}/note', name: 'api_commandes_note', methods: ['POST'])]
+    public function rateMovie(
+        int $id,
+        Request $request,
+        SessionInterface $session,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        // Vérifie si l'utilisateur est connecté
+        $loggedInUser = $session->get('user');
+        if (!$loggedInUser) {
+            return new JsonResponse(['error' => 'User not authenticated'], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+    
+        // Récupérer l'utilisateur connecté
+        $user = $em->getRepository(Utilisateur::class)->findOneBy(['login' => $loggedInUser['login']]);
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+    
+        // Récupérer la réservation
+        $reservation = $em->getRepository(Reservation::class)->find($id);
+        if (!$reservation || $reservation->getUtilisateur() !== $user) {
+            return new JsonResponse(['error' => 'Reservation not found or access denied'], JsonResponse::HTTP_FORBIDDEN);
+        }
+    
+        // Vérifier si la séance est terminée
+        $seance = $reservation->getSeances();
+        $now = new \DateTime();
+        if ($seance->getDateFin() > $now) {
+            return new JsonResponse(['error' => 'You can only rate after the session ends'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+    
+        // Récupérer la note soumise
+        $data = json_decode($request->getContent(), true);
+        $note = $data['note'] ?? null;
+    
+        if ($note === null || $note < 1 || $note > 5) {
+            return new JsonResponse(['error' => 'Invalid rating. Must be between 1 and 5'], JsonResponse::HTTP_BAD_REQUEST);
+        }
+    
+        // Mettre à jour la note du film
+        $film = $seance->getFilms();
+        $filmNote = $film->getNote();
+    
+        if ($filmNote === null) {
+            $film->setNote($note); // Première note
+        } else {
+            // Calculer la moyenne des notes
+            $film->setNote(($filmNote + $note) / 2); // Simplification pour éviter d'ajouter un tableau de notes
+        }
+    
+        // Enregistrer les changements
+        $em->persist($film);
+        $em->flush();
+    
+        return new JsonResponse(['message' => 'Rating submitted successfully'], JsonResponse::HTTP_OK);
+    }
+    
+    #[Route('/api/seances', name: 'api_seances', methods: ['GET'])]
+    public function getFutureSeances(SessionInterface $session, EntityManagerInterface $em): JsonResponse
+    {
+        $loggedInUser = $session->get('user');
+    
+        if (!$loggedInUser) {
+            return new JsonResponse(['error' => 'User not authenticated'], JsonResponse::HTTP_UNAUTHORIZED);
+        }
+    
+        // Récupérer l'utilisateur connecté
+        $user = $em->getRepository(Utilisateur::class)->findOneBy(['login' => $loggedInUser['login']]);
+    
+        if (!$user) {
+            return new JsonResponse(['error' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+    
+        // Filtrer les réservations à partir d'aujourd'hui
+        $now = new \DateTime();
+        $reservations = $em->getRepository(Reservation::class)
+            ->createQueryBuilder('r')
+            ->join('r.seances', 's')
+            ->where('r.utilisateur = :user')
+            ->andWhere('s.dateDebut >= :now') // Filtrer les séances futures
+            ->setParameter('user', $user)
+            ->setParameter('now', $now)
+            ->orderBy('s.dateDebut', 'ASC') // Trier par date de début
+            ->getQuery()
+            ->getResult();
+    
+        if (!$reservations) {
+            return new JsonResponse(['error' => 'No upcoming reservations found'], JsonResponse::HTTP_NOT_FOUND);
+        }
+    
+        $reservationsData = array_map(function ($reservation) {
+            $seance = $reservation->getSeances();
+            $film = $seance->getFilms();
+            $salle = $seance->getSalle();
+    
+            return [
+                'id' => $reservation->getId(),
+                'film' => [
+                    'title' => $film->getTitle(),
+                    'affiche' => $film->getAffiche(), // Affiche du film
+                ],
+                'date' => $seance->getDateDebut()->format('Y-m-d'),
+                'heureDebut' => $seance->getDateDebut()->format('H:i'),
+                'heureFin' => $seance->getDateFin()->format('H:i'),
+                'salle' => $salle->getNumero(),
+                'sieges' => $reservation->getSiegesReserves(),
+            ];
+        }, $reservations);
+    
+        return new JsonResponse(['seances' => $reservationsData], JsonResponse::HTTP_OK);
+    }
+    
 
 }

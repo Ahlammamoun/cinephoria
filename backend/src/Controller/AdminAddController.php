@@ -372,7 +372,7 @@ class AdminAddController extends AbstractController
 
         // Décoder les données reçues
         $data = json_decode($request->getContent(), true);
-
+    //   dump($data);
         try {
             // Mise à jour des champs de la salle
             $salle->setCapaciteTotale($data['capaciteTotale'] ?? $salle->getCapaciteTotale());
@@ -388,6 +388,11 @@ class AdminAddController extends AbstractController
                 $salle->setQualite($qualite);
             }
 
+            // **NOUVEAU : Mise à jour des réparations**
+            if (isset($data['reparation'])) {
+                $salle->setReparations($data['reparation']); // Supposons un champ réparations dans l'entité Salle
+            }
+            // dump($salle->getReparations());
             // Enregistrement des modifications
             $entityManager->flush();
 
@@ -430,6 +435,7 @@ class AdminAddController extends AbstractController
                 'qualite' => $salle->getQualite()
                     ? ['id' => $salle->getQualite()->getId(), 'nom' => $salle->getQualite()->getName()]
                     : null, // Sérialiser correctement la relation
+                'reparation' => $salle->getReparations(),
             ];
         }, $salles);
 
@@ -487,6 +493,7 @@ class AdminAddController extends AbstractController
 
         return new JsonResponse($stats);
     }
+
 
 
 }

@@ -9,6 +9,49 @@
   pointer-events: none;
 }
 
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #1b1b1b;
+  color: #e50914;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #e50914;
+}
+
+input[type="number"] {
+  width: 50px;
+  padding: 5px;
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -60,11 +103,6 @@ button.logout {
   font-size: 16px;
 }
 
-.nav-links a {
-  text-decoration: none;
-  color: #e50914;
-  transition: color 0.3s ease;
-}
 
 .nav-links a:hover {
   color: #83050c;
@@ -1200,16 +1238,20 @@ select.admin {
 
 }
 
+textarea {
+  width: 100%;
+}
 
 .salle-container {
   padding: 20px;
-  max-width: 800px;
+  max-width: 1000px;
   margin: auto;
 }
 
 .salle-form label {
   display: block;
   margin-bottom: 10px;
+  color: aliceblue;
 }
 
 .salle-form input {
@@ -1231,6 +1273,7 @@ select.admin {
 .salle-list {
   margin-top: 20px;
   list-style: none;
+  color: aliceblue;
 }
 
 .salle-item {
@@ -1268,6 +1311,180 @@ h1.graphique {
   text-align: center;
   color: #e50914;
   margin-bottom: 13%;
+}
+/* Général */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%; /* Empêche le dépassement horizontal */
+  overflow-x: hidden; /* Désactive la barre de défilement horizontale */
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4; /* Couleur de fond */
+}
+
+/* Conteneur principal */
+.mobile-container {
+  padding: 10px;
+  box-sizing: border-box;
+  max-width: 100%; /* Ne dépasse jamais la largeur de l'écran */
+}
+
+/* Liste des séances */
+.seance-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Élément individuel */
+.seance-item {
+  display: flex;
+  flex-direction: column; /* Empile verticalement */
+  align-items: center;
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Affiche du film */
+.film-affiche {
+  width: 100%; /* Utilise 100% de la largeur disponible */
+  max-width: 400px; /* Limite la largeur maximale */
+  height: auto; /* Garde le ratio d'aspect */
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+/* Détails de la séance */
+.seance-details {
+  width: 100%; /* Remplit la largeur du conteneur */
+  text-align: center;
+}
+
+.seance-details h3 {
+  font-size: 18px;
+  margin: 0 0 5px 0;
+}
+
+.seance-details p {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+/* Responsive Design */
+/* Menu Burger */
+.burger-menu {
+  display: none; /* Caché par défaut sur desktop */
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.burger-bar {
+  width: 25px;
+  height: 3px;
+  margin: 3px;
+  background-color: #e50914;
+  transition: all 0.3s ease;
+}
+
+/* Styles par défaut pour la navigation */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  margin: 0;
+  padding: 0;
+}
+
+
+/* Menu burger pour mobile */
+.burger-menu-links {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  right: 0;
+  background-color: #1b1b1b;
+  width: 100%;
+  padding: 10px 0;
+  z-index: 10;
+}
+
+.burger-menu-links.active {
+  display: flex; /* Affiché lorsqu'il est actif */
+}
+
+.burger-menu-links a {
+  text-decoration: none;
+  color: #e50914;
+  padding: 10px;
+  text-align: center;
+  transition: 0.3s ease;
+}
+a {
+  text-decoration: none;
+  color: #e50914;
+}
+.burger-menu-links a:hover {
+  background-color: #83050c;
+  color: white;
+}
+
+/* Navigation responsive */
+@media screen and (max-width: 768px) {
+  .burger-menu {
+      display: flex; /* Affiche le burger sur mobile */
+  }
+
+  .nav-links {
+      display: none; /* Cache les liens principaux sur mobile */
+  }
+
+  .burger-menu-links {
+      display: none; /* Cache le menu burger par défaut */
+  }
+
+  .burger-menu-links.active {
+      display: flex; /* Affiche le menu burger lorsqu'il est actif */
+  }
+}
+
+/* Écrans < 768px (tablettes et téléphones) */
+@media screen and (max-width: 768px) {
+  .mobile-container {
+      padding: 5px;
+  }
+
+  .seance-item {
+      padding: 8px;
+  }
+
+  .film-affiche {
+      width: 100%;
+      max-width: 100%;
+  }
+
+  .seance-details h3 {
+      font-size: 16px;
+  }
+
+  .seance-details p {
+      font-size: 12px;
+  }
+}
+
+/* Écrans très petits < 480px */
+@media screen and (max-width: 480px) {
+  .seance-details h3 {
+      font-size: 14px;
+  }
+
+  .seance-details p {
+      font-size: 12px;
+  }
 }
 
 /* Adaptabilité mobile */
