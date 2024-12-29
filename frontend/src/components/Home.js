@@ -13,11 +13,11 @@ const HomePage = () => {
 
   return (
     <div>
-      <h1>Films ajoutés le dernier mercredi</h1>
+        <img className = "logo" src={`/assets/images/image0.jpeg`} />
       <div className="movies-list">
         {movies.map((movie) => (
           <div key={movie.id} className="movie-card">
-            <img src={movie.affiche} alt={movie.title} />
+            <img src={`/assets/images/${movie.affiche}`} alt={movie.title} />
             <h2>{movie.title}</h2>
             <p>{movie.description}</p>
             <div className="movie-info">

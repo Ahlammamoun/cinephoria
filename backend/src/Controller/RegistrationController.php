@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController
 {
     #[Route('/api/register', name: 'api_register', methods: ['POST'])]
-    public function register(Request $request,  UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): JsonResponse
+    public function register(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): JsonResponse
     {
         try {
             $data = json_decode($request->getContent(), true);
@@ -26,13 +26,19 @@ class RegistrationController extends AbstractController
                 return new JsonResponse(['error' => 'Missing required fields'], Response::HTTP_BAD_REQUEST);
             }
 
+            // Validate the role
+            $validRoles = ['user', 'admin', 'employe']; // Added ROLE_EMPLOYE
+            if (!in_array($data['role'], $validRoles)) {
+                return new JsonResponse(['error' => 'Invalid role'], Response::HTTP_BAD_REQUEST);
+            }
+
             // Create the user
             $user = new Utilisateur();
             $user->setLogin($data['login']);
             $user->setPrenom($data['prenom']);
             $user->setNom($data['nom']);
             $user->setRole($data['role']);
-            $user->setPassword($passwordHasher->hashPassword($user, $data['password'])); 
+            $user->setPassword($passwordHasher->hashPassword($user, $data['password']));
 
             // Persist the user
             $em->persist($user);

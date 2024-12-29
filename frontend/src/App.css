@@ -50,7 +50,10 @@ input[type="number"] {
   margin: 10px 0;
   font-size: 16px;
 }
-
+img.logo{
+  height: 80px;
+  width: 100px;
+}
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -1161,12 +1164,7 @@ button.edit-btn:hover {
   flex-direction: column;
 }
 
-/* Labels */
-.film-form label {
-  margin-bottom: 8px;
-  font-weight: bold;
-  color: #555;
-}
+
 
 /* Inputs et Textareas */
 .film-form input,

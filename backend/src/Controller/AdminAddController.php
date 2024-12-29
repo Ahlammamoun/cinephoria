@@ -6,6 +6,7 @@ use App\Entity\Film;
 use App\Entity\Seance;
 use App\Entity\Qualite;
 use App\Entity\Salle;
+use App\Entity\Genre;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,6 +48,11 @@ class AdminAddController extends AbstractController
                 return new JsonResponse(['error' => 'Données du film incomplètes.'], Response::HTTP_BAD_REQUEST);
             }
 
+            // Validation des genres
+            if (!isset($data['genres']) || !is_array($data['genres'])) {
+                return new JsonResponse(['error' => 'Genres du film manquants ou invalides.'], Response::HTTP_BAD_REQUEST);
+            }
+
             // Créer un nouveau film
             $film = new Film();
             $film->setTitle($data['title']);
@@ -55,6 +61,14 @@ class AdminAddController extends AbstractController
             $film->setMinimumAge($data['minimumAge']);
             $film->setNote($data['note']);
             $film->setAffiche($data['affiche']);
+
+            foreach ($data['genres'] as $genreId) {
+                $genre = $entityManager->getRepository(Genre::class)->find($genreId);
+                if (!$genre) {
+                    return new JsonResponse(['error' => "Genre ID $genreId introuvable."], Response::HTTP_BAD_REQUEST);
+                }
+                $film->addGenre($genre); // Ajout du genre au film
+            }
 
             $entityManager->persist($film);
 
@@ -265,6 +279,25 @@ class AdminAddController extends AbstractController
         return new JsonResponse($data);
     }
 
+    #[Route('/api/genres', name: 'api_get_genres', methods: ['GET'])]
+    public function getGenres(EntityManagerInterface $entityManager): JsonResponse
+    {
+        $genres = $entityManager->getRepository(Genre::class)->findAll();
+
+        $genresArray = [];
+        foreach ($genres as $genre) {
+            $genresArray[] = [
+                'id' => $genre->getId(),
+                'name' => $genre->getName(),
+            ];
+        }
+
+        return new JsonResponse($genresArray, Response::HTTP_OK);
+    }
+
+
+
+
 
     #[Route('/api/admin/get-film-with-seances/{id}', name: 'admin_get_film_with_seances', methods: ['GET'])]
     public function getFilmWithSeances(
@@ -372,7 +405,7 @@ class AdminAddController extends AbstractController
 
         // Décoder les données reçues
         $data = json_decode($request->getContent(), true);
-    //   dump($data);
+        //   dump($data);
         try {
             // Mise à jour des champs de la salle
             $salle->setCapaciteTotale($data['capaciteTotale'] ?? $salle->getCapaciteTotale());

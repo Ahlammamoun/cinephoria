@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const AddFilm = () => {
   // État pour les informations du film
@@ -19,7 +19,27 @@ const AddFilm = () => {
     qualiteId: "",
   });
 
+  // États pour les genres
+  const [genres, setGenres] = useState([]); // Genres disponibles
+  const [selectedGenres, setSelectedGenres] = useState([]);
   const [message, setMessage] = useState(null); // Message de succès ou d'erreur
+
+
+  // Charger les genres disponibles depuis le backend
+  useEffect(() => {
+    const fetchGenres = async () => {
+      try {
+        const response = await fetch("http://localhost:8000/api/genres"); // Endpoint pour récupérer les genres
+        const data = await response.json();
+        setGenres(data); // Remplit la liste des genres
+      } catch (error) {
+        console.error("Erreur lors du chargement des genres :", error);
+      }
+    };
+
+    fetchGenres();
+  }, []);
+
 
   // Gestion des changements pour les champs du film
   const handleChange = (e) => {
@@ -39,6 +59,13 @@ const AddFilm = () => {
     }));
   };
 
+
+  // Gestion des changements pour les genres sélectionnés
+  const handleGenreChange = (e) => {
+    const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+    setSelectedGenres(selected); // Stocke les IDs des genres sélectionnés
+  };
+  
   // Gestion de la soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,6 +75,7 @@ const AddFilm = () => {
       // Combiner les données du film et de la séance dans une seule requête
       const requestData = {
         ...formData,
+        genres: selectedGenres,
         seances: [seance], // Ajouter la séance dans un tableau
       };
 
@@ -81,6 +109,7 @@ const AddFilm = () => {
           salleId: "",
           qualiteId: "",
         });
+        setSelectedGenres([]);
       }
     } catch (err) {
       setMessage({ type: "error", text: "Erreur de connexion au serveur" });
@@ -124,6 +153,17 @@ const AddFilm = () => {
           <input type="text" name="affiche" value={formData.affiche} onChange={handleChange} required />
         </label>
 
+        <label>
+          Genres:
+          <select multiple value={selectedGenres} onChange={handleGenreChange}>
+            {genres.map((genre) => (
+              <option key={genre.id} value={genre.id}>
+                {genre.name}
+              </option>
+            ))}
+          </select>
+        </label>
+
         <h2>Séance associée</h2>
         <label>
           Date Début:
@@ -147,7 +187,7 @@ const AddFilm = () => {
           />
         </label>
 
-        
+
 
         <label>
           Salle ID:

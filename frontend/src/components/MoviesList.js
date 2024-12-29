@@ -147,13 +147,12 @@ const MoviesList = () => {
         />
       </div>
       </div>
-
       {/* Liste des films */}
       <div className="movie-carousel">
         {movies.map((movie) => (
           <div className="movie-item" key={movie.id}>
             <img
-              src={movie.affiche}
+              src={`/assets/images/${movie.affiche}`}
               alt={movie.title}
               style={{ cursor: "pointer" }}
               onClick={() => openPopup(movie)} // Ouvrir la popup au clic sur le film
