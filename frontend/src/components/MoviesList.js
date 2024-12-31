@@ -94,6 +94,14 @@ const MoviesList = () => {
     });
   };
 
+ // Fonction handleReset
+ const handleReset = () => {
+  setCinemas(''); // Réinitialise le cinéma
+  setGenre('');  // Réinitialise le genre
+  setDate('');   // Réinitialise la date
+};
+
+
   if (!movies.length) {
     return <p className="chargement ">Chargement des films...</p>;
   }
@@ -146,7 +154,12 @@ const MoviesList = () => {
           onChange={(e) => setDate(e.target.value)}
         />
       </div>
+       {/* Bouton Reset */}
+       <button className="reeset" onClick={handleReset}>XX</button>
       </div>
+
+
+
       {/* Liste des films */}
       <div className="movie-carousel">
         {movies.map((movie) => (

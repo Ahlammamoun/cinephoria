@@ -83,7 +83,7 @@ class AuthenticationController extends AbstractController
     public function checkSession(SessionInterface $session): JsonResponse
     {
         $user = $session->get('user');
-        var_dump($user);
+       // var_dump($user);
         if (!$user) {
             return new JsonResponse(['authenticated' => false], JsonResponse::HTTP_UNAUTHORIZED);
         }

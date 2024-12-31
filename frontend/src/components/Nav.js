@@ -33,7 +33,7 @@ const Navbar = () => {
                 {user ? (
                     <>
                     <li className="name">👤</li>
-                        <li> {user.nom} {user.prenom}</li>
+                        <li> {user.prenom} {user.nom} </li>
                         <li>
                             <a href="#" className="logout-link" onClick={logout}>Logout</a>
                         </li>

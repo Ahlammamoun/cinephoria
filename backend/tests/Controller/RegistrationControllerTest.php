@@ -24,33 +24,42 @@ class RegistrationControllerTest extends WebTestCase
 
     public function testRegisterUserWithValidData()
     {
-        // Simuler une requête POST avec des données valides
+        // Generate a unique login each time
+        $uniqueLogin = 'testuser_' . uniqid();
+    
+        // Prepare the user data with the unique login
         $data = [
-            'login' => 'testuser',
+            'login' => $uniqueLogin,
             'password' => 'password123',
             'prenom' => 'John',
             'nom' => 'Doe',
             'role' => 'user'
         ];
-
+    
+        // Simulate a POST request with the data
         $this->client->request('POST', '/api/register', [], [], [], json_encode($data));
-
-        // Vérifiez que la réponse HTTP est 201 (créée)
+    
+        // Verify the HTTP response is 201 (Created)
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
-
-        // Vérifiez que le message de succès est bien présent
+    
+        // Verify that the success message is returned in the response
         $response = json_decode($this->client->getResponse()->getContent(), true);
         $this->assertArrayHasKey('message', $response);
         $this->assertEquals('User created successfully', $response['message']);
-
-        // Vérifiez que l'utilisateur est bien enregistré dans la base de données
-        $user = $this->entityManager->getRepository(Utilisateur::class)->findOneBy(['login' => 'testuser']);
+    
+        // Verify the user is registered in the database
+        $user = $this->entityManager->getRepository(Utilisateur::class)->findOneBy(['login' => $uniqueLogin]);
         $this->assertNotNull($user);
-        $this->assertEquals('testuser', $user->getLogin());
-
-        // Vérifiez que le mot de passe est bien haché (il ne doit pas correspondre au mot de passe en clair)
+        $this->assertEquals($uniqueLogin, $user->getLogin());
+    
+        // Verify that the password is hashed (it should not match the plain password)
         $this->assertNotEquals('password123', $user->getPassword());
+    
+        // You could also check that the hashed password matches the format used by your hashing algorithm
+        // For example, if using bcrypt, the password should start with "$2y$" or similar
+        $this->assertStringStartsWith('$2y$', $user->getPassword());  // Assuming bcrypt is used
     }
+    
 
     public function testRegisterUserWithMissingFields()
     {

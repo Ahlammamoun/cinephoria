@@ -32,11 +32,11 @@ class AdminAddController extends AbstractController
                 return new JsonResponse(['error' => 'Accès interdit, vous devez être administrateur'], 403);
             }
 
-            // Vérifie si aujourd'hui est mercredi
-            $today = new \DateTime();
-            if ($today->format('w') !== '3') { // '3' correspond au mercredi
-                return new JsonResponse(['error' => 'Les films ne peuvent être ajoutés que le mercredi.'], Response::HTTP_FORBIDDEN);
-            }
+            // Vérifie si aujourd'hui est mercredi a décommenter
+                    // $today = new \DateTime();
+                    // if ($today->format('w') !== '3') { // '3' correspond au mercredi
+                    //     return new JsonResponse(['error' => 'Les films ne peuvent être ajoutés que le mercredi.'], Response::HTTP_FORBIDDEN);
+                    // }
 
             // Décoder les données reçues
             $data = json_decode($request->getContent(), true);

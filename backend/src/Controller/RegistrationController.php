@@ -32,6 +32,12 @@ class RegistrationController extends AbstractController
                 return new JsonResponse(['error' => 'Invalid role'], Response::HTTP_BAD_REQUEST);
             }
 
+            // Vérifie si l'utilisateur existe déjà dans la base
+            $existingUser = $em->getRepository(Utilisateur::class)->findOneBy(['login' => $data['login']]);
+            if ($existingUser) {
+                return new JsonResponse(['error' => 'Login already exists'], Response::HTTP_CONFLICT); // HTTP 409
+            }
+
             // Create the user
             $user = new Utilisateur();
             $user->setLogin($data['login']);

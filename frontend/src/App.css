@@ -600,14 +600,7 @@ h3.siege {
   padding: 0;
 }
 
-.seance-item {
-  background-color: #2a2a2a;
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+
 
 .seance-item:hover {
   background-color: #3b3b3b;
@@ -983,12 +976,7 @@ body {
   color: whitesmoke;
 }
 
-.film-form input,
-.film-form textarea {
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
+
 
 .film-form button {
   margin-top: 10px;
@@ -1036,6 +1024,7 @@ body {
   border: solid 2px whitesmoke;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: whitesmoke;
 }
 
 
@@ -1075,6 +1064,8 @@ select {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  background-color: #2a2a2a;
+  
 }
 
 /* Boutons */
@@ -1165,7 +1156,9 @@ button.edit-btn:hover {
 }
 
 
-
+textarea {
+  width: 23.5em;
+}
 /* Inputs et Textareas */
 .film-form input,
 .film-form textarea,
@@ -1175,17 +1168,10 @@ button.edit-btn:hover {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  background-color: #2a2a2a;
 }
 
-/* Champs pour les séances */
-.seance-item {
-  padding: 15px;
-  margin-bottom: 15px;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+
 
 /* Boutons */
 button {
@@ -1238,6 +1224,7 @@ select.admin {
 
 textarea {
   width: 100%;
+  background-color: #2a2a2a;
 }
 
 .salle-container {
@@ -1257,6 +1244,7 @@ textarea {
   padding: 8px;
   margin-bottom: 10px;
   box-sizing: border-box;
+  background-color: #2a2a2a;
 }
 
 .salle-form button {
@@ -1345,6 +1333,7 @@ body, html {
   border-radius: 5px;
   background-color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: black;
 }
 
 /* Affiche du film */

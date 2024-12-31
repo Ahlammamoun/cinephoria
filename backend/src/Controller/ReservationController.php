@@ -167,7 +167,17 @@ class ReservationController extends AbstractController
 
 
         $seance = $seanceRepository->find(1);
+        // Vérifier si la séance existe
+        if (!$seance) {
+            return new JsonResponse(['error' => 'Seance not found'], 404);
+        }
+
+
         $salle = $seance->getSalle();
+
+        if (!$salle) {
+            return new JsonResponse(['error' => 'Salle not found'], 404);
+        }
         $totalSeats = range(1, $salle->getCapaciteTotale()); // Exemple : Si 100 sièges, génère [1, 2, ..., 100]
 
         // Récupérer les sièges déjà réservés
@@ -220,7 +230,7 @@ class ReservationController extends AbstractController
 
         // Créer une réservation
         $reservation = new Reservation();
-        $reservation->setUtilisateur($utilisateur); 
+        $reservation->setUtilisateur($utilisateur);
         $reservation->setSeances($seance);
         $reservation->setNombreSieges(count($seats));
         $reservation->setSiegesReserves($seats);
@@ -309,68 +319,68 @@ class ReservationController extends AbstractController
         if (!$loggedInUser) {
             return new JsonResponse(['error' => 'User not authenticated'], JsonResponse::HTTP_UNAUTHORIZED);
         }
-    
+
         // Récupérer l'utilisateur connecté
         $user = $em->getRepository(Utilisateur::class)->findOneBy(['login' => $loggedInUser['login']]);
         if (!$user) {
             return new JsonResponse(['error' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
         }
-    
+
         // Récupérer la réservation
         $reservation = $em->getRepository(Reservation::class)->find($id);
         if (!$reservation || $reservation->getUtilisateur() !== $user) {
             return new JsonResponse(['error' => 'Reservation not found or access denied'], JsonResponse::HTTP_FORBIDDEN);
         }
-    
+
         // Vérifier si la séance est terminée
         $seance = $reservation->getSeances();
         $now = new \DateTime();
         if ($seance->getDateFin() > $now) {
             return new JsonResponse(['error' => 'You can only rate after the session ends'], JsonResponse::HTTP_BAD_REQUEST);
         }
-    
+
         // Récupérer la note soumise
         $data = json_decode($request->getContent(), true);
         $note = $data['note'] ?? null;
-    
+
         if ($note === null || $note < 1 || $note > 5) {
             return new JsonResponse(['error' => 'Invalid rating. Must be between 1 and 5'], JsonResponse::HTTP_BAD_REQUEST);
         }
-    
+
         // Mettre à jour la note du film
         $film = $seance->getFilms();
         $filmNote = $film->getNote();
-    
+
         if ($filmNote === null) {
             $film->setNote($note); // Première note
         } else {
             // Calculer la moyenne des notes
             $film->setNote(($filmNote + $note) / 2); // Simplification pour éviter d'ajouter un tableau de notes
         }
-    
+
         // Enregistrer les changements
         $em->persist($film);
         $em->flush();
-    
+
         return new JsonResponse(['message' => 'Rating submitted successfully'], JsonResponse::HTTP_OK);
     }
-    
+
     #[Route('/api/seances', name: 'api_seances', methods: ['GET'])]
     public function getFutureSeances(SessionInterface $session, EntityManagerInterface $em): JsonResponse
     {
         $loggedInUser = $session->get('user');
-    
+
         if (!$loggedInUser) {
             return new JsonResponse(['error' => 'User not authenticated'], JsonResponse::HTTP_UNAUTHORIZED);
         }
-    
+
         // Récupérer l'utilisateur connecté
         $user = $em->getRepository(Utilisateur::class)->findOneBy(['login' => $loggedInUser['login']]);
-    
+
         if (!$user) {
             return new JsonResponse(['error' => 'User not found'], JsonResponse::HTTP_NOT_FOUND);
         }
-    
+
         // Filtrer les réservations à partir d'aujourd'hui
         $now = new \DateTime();
         $reservations = $em->getRepository(Reservation::class)
@@ -383,16 +393,16 @@ class ReservationController extends AbstractController
             ->orderBy('s.dateDebut', 'ASC') // Trier par date de début
             ->getQuery()
             ->getResult();
-    
+
         if (!$reservations) {
             return new JsonResponse(['error' => 'No upcoming reservations found'], JsonResponse::HTTP_NOT_FOUND);
         }
-    
+
         $reservationsData = array_map(function ($reservation) {
             $seance = $reservation->getSeances();
             $film = $seance->getFilms();
             $salle = $seance->getSalle();
-    
+
             return [
                 'id' => $reservation->getId(),
                 'film' => [
@@ -406,9 +416,9 @@ class ReservationController extends AbstractController
                 'sieges' => $reservation->getSiegesReserves(),
             ];
         }, $reservations);
-    
+
         return new JsonResponse(['seances' => $reservationsData], JsonResponse::HTTP_OK);
     }
-    
+
 
 }
