@@ -18,6 +18,7 @@ import Dashboard from "./components/Dashboard";
 import ForgotPassword from "./components/ForgotPassword";
 import ChangePassword from "./components/ChangePassword";
 import SeancesMobile from "./components/SeancesMobile";
+import ContactForm from "./components/ContactForm";
 
 
 function App() {
@@ -35,7 +36,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<RegisterForm />} />
-
+            <Route path="/contactForm" element={<ContactForm />} />
             <Route path="/movies" element={<MoviesList />} />
 
             <Route path="/login" element={<LoginForm />} />

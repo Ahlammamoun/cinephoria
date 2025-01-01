@@ -187,10 +187,11 @@ a.logo {
   background-color: #1b1b1b;
   color: white;
   padding: 30px;
-  border: solid 5px rgba(165, 22, 22, 0.2);
+  border: solid 1px whitesmoke;
   max-width: 400px;
   margin: 50px auto;
   min-height: 36em;
+  border-radius: 2%;
 }
 
 .register-container h2 {
@@ -1156,9 +1157,7 @@ button.edit-btn:hover {
 }
 
 
-textarea {
-  width: 23.5em;
-}
+
 /* Inputs et Textareas */
 .film-form input,
 .film-form textarea,
@@ -1222,10 +1221,6 @@ select.admin {
 
 }
 
-textarea {
-  width: 100%;
-  background-color: #2a2a2a;
-}
 
 .salle-container {
   padding: 20px;
@@ -1420,6 +1415,100 @@ a {
   color: white;
 }
 
+canvas {
+  padding: 21px;
+}
+
+textarea.description {
+  width: 94%;
+}
+
+.contact-page-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #1b1b1b;
+  flex-direction: column;
+}
+
+/* Form styling */
+.contact-page-form {
+  width: 96%;
+  max-width: 600px;
+  padding: 20px;
+  background: #1b1b1b;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: solid 1px whitesmoke;
+}
+
+
+
+/* Message */
+.contact-page-message {
+  margin-bottom: 10px;
+  text-align: center;
+  color: green;
+}
+
+/* Form groups */
+.contact-page-form-group {
+  margin-bottom: 15px;
+}
+
+/* Labels */
+.contact-page-label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: whitesmoke;
+}
+
+/* Inputs and Textarea */
+.contact-page-input,
+.contact-page-textarea {
+  width: 96%;
+  padding: 10px;
+  margin: 5px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  background-color: #2a2a2a;
+}
+
+/* Focus styling */
+.contact-page-input:focus,
+.contact-page-textarea:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Button styling */
+.contact-page-button {
+  width: 100%;
+  padding: 10px;
+  background: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+
+}
+
+.contact-page-button:hover {
+  background: #0056b3;
+}
+
+/* Responsive design for small screens */
+@media (max-width: 600px) {
+  .contact-page-form {
+      padding: 15px;
+  }
+}
 /* Navigation responsive */
 @media screen and (max-width: 768px) {
   .burger-menu {

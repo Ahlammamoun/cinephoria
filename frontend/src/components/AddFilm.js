@@ -130,7 +130,7 @@ const AddFilm = () => {
 
         <label>
           Description:
-          <textarea name="description" value={formData.description} onChange={handleChange} required />
+          <textarea className="description" name="description" value={formData.description} onChange={handleChange} required />
         </label>
 
         <label>

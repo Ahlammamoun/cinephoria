@@ -47,7 +47,7 @@ const Navbar = () => {
                     <li><a href="/commandes">Espaces</a></li>
                 )}
                 <li><a href="/movies">Movies</a></li>
-                <li><a href="/contact">Contact</a></li>
+                <li><a href="/contactForm">Contact</a></li>
 
                 {/* Liens Admin dans Desktop */}
                 {user && user.role === "admin" && (
@@ -74,7 +74,7 @@ const Navbar = () => {
                 <li><a href="/reservation">Réservation</a></li>
                 <li><a href="/seancesMobile">Séances</a></li> {/* "Séances" dans le menu burger */}
                 <li><a href="/movies">Movies</a></li>
-                <li><a href="/contact">Contact</a></li>
+                <li><a href="/contactForm">Contact</a></li>
                 {user && user.role === "admin" && (
                     <>
                         <li><a href="/addFilm">Ajouter un Film</a></li>
