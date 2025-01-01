@@ -62,11 +62,7 @@ const SeancesMobile = () => {
                 <ul className="seance-list">
                     {seances.map((seance) => (
                         <li key={seance.id} className="seance-item" onClick={() => handleSelectSeance(seance)}>
-                            <img
-                                src={seance.film.affiche}
-                                alt={seance.film.title}
-                                className="film-affiche"
-                            />
+                    
                             <div className="seance-details">
                                 <h3>{seance.film.title}</h3>
                                 <p><strong>Date :</strong> {seance.date}</p>
