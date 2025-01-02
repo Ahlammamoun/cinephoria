@@ -50,7 +50,8 @@ input[type="number"] {
   margin: 10px 0;
   font-size: 16px;
 }
-img.logo{
+
+img.logo {
   height: 80px;
   width: 100px;
 }
@@ -937,7 +938,30 @@ body {
   font-size: 1.2em;
   margin: 10px;
   color: #e50914;
-  /* Couleur rouge Netflix */
+  /* Rouge Netflix */
+  border-top-style: double;
+  /* Bordure supérieure en double ligne */
+  border-top-color: gold;
+  /* Couleur dorée pour la bordure */
+  border-top-width: 3px;
+  /* Épaisseur de la bordure */
+  padding-top: 5px;
+  /* Espace intérieur pour éviter que le texte touche la bordure */
+}
+
+.movie-item h2 {
+  font-size: 1.2em;
+  margin: 10px;
+  color: #e50914;
+  /* Rouge Netflix */
+  border-top-style: double;
+  /* Bordure supérieure en double ligne */
+  border-top-color: gold;
+  /* Couleur dorée pour la bordure */
+  border-top-width: 3px;
+  /* Épaisseur de la bordure */
+  padding-top: 5px;
+  /* Espace intérieur pour éviter que le texte touche la bordure */
 }
 
 .movie-card p {
@@ -954,7 +978,7 @@ body {
 
 
 .add-film-container {
-  width: 400px;
+  width: 50%;
   margin: 0 auto;
   padding: 20px;
   border: 1px solid #ddd;
@@ -1066,7 +1090,8 @@ select {
   border-radius: 4px;
   font-size: 16px;
   background-color: #2a2a2a;
-  
+  color: whitesmoke;
+
 }
 
 /* Boutons */
@@ -1168,8 +1193,8 @@ button.edit-btn:hover {
   border-radius: 4px;
   font-size: 16px;
   background-color: #2a2a2a;
+  color: whitesmoke;
 }
-
 
 
 /* Boutons */
@@ -1226,6 +1251,8 @@ select.admin {
   padding: 20px;
   max-width: 1000px;
   margin: auto;
+  border: solid 1px whitesmoke;
+  border-radius: 2%;
 }
 
 .salle-form label {
@@ -1240,6 +1267,7 @@ select.admin {
   margin-bottom: 10px;
   box-sizing: border-box;
   background-color: #2a2a2a;
+  color: whitesmoke;
 }
 
 .salle-form button {
@@ -1251,12 +1279,6 @@ select.admin {
   cursor: pointer;
 }
 
-.salle-list {
-  margin-top: 20px;
-  list-style: none;
-  color: aliceblue;
-}
-
 .salle-item {
   padding: 10px;
   border: 1px solid #ddd;
@@ -1265,6 +1287,8 @@ select.admin {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  /* Permet à l'élément de s'adapter lorsque l'espace est réduit */
 }
 
 .salle-item button {
@@ -1272,6 +1296,61 @@ select.admin {
   padding: 8px;
   cursor: pointer;
 }
+
+.salle-list {
+  margin-top: 20px;
+  list-style: none;
+  color: aliceblue;
+  padding: 0;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .salle-item {
+    flex-direction: column;
+    /* Sur les petits écrans, les éléments se superposent */
+    align-items: flex-start;
+    /* Aligne les éléments au début */
+  }
+
+  .salle-item button {
+    margin-left: 0;
+    /* Supprime l'espacement à gauche du bouton */
+    margin-top: 10px;
+    /* Ajoute un espacement en haut pour que les boutons ne collent pas au texte */
+  }
+
+  .add-film-container {
+    width: 80%;
+    border: solid transparent;
+
+  }
+
+  .salle-container {
+
+    border: solid 1px transparent;
+
+  }
+
+  .edit {
+
+    border: solid 2px transparent;
+
+  }
+}
+
+@media (max-width: 480px) {
+  .salle-item {
+    padding: 8px;
+    /* Réduit l'espacement interne pour les très petits écrans */
+  }
+
+  .salle-item button {
+    padding: 6px;
+    /* Réduit la taille du bouton sur les très petits écrans */
+  }
+}
+
 
 .message.success {
   color: green;
@@ -1282,10 +1361,6 @@ select.admin {
 }
 
 
-.salle-container {
-  border: solid 2px white;
-  border-radius: 2%;
-}
 
 h1.graphique {
 
@@ -1293,21 +1368,27 @@ h1.graphique {
   color: #e50914;
   margin-bottom: 13%;
 }
+
 /* Général */
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
-  width: 100%; /* Empêche le dépassement horizontal */
-  overflow-x: hidden; /* Désactive la barre de défilement horizontale */
+  width: 100%;
+  /* Empêche le dépassement horizontal */
+  overflow-x: hidden;
+  /* Désactive la barre de défilement horizontale */
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4; /* Couleur de fond */
+  background-color: #f4f4f4;
+  /* Couleur de fond */
 }
 
 /* Conteneur principal */
 .mobile-container {
   padding: 10px;
   box-sizing: border-box;
-  max-width: 100%; /* Ne dépasse jamais la largeur de l'écran */
+  max-width: 100%;
+  /* Ne dépasse jamais la largeur de l'écran */
 }
 
 /* Liste des séances */
@@ -1320,7 +1401,8 @@ body, html {
 /* Élément individuel */
 .seance-item {
   display: flex;
-  flex-direction: column; /* Empile verticalement */
+  flex-direction: column;
+  /* Empile verticalement */
   align-items: center;
   margin-bottom: 15px;
   border: 1px solid #ddd;
@@ -1333,16 +1415,20 @@ body, html {
 
 /* Affiche du film */
 .film-affiche {
-  width: 100%; /* Utilise 100% de la largeur disponible */
-  max-width: 400px; /* Limite la largeur maximale */
-  height: auto; /* Garde le ratio d'aspect */
+  width: 100%;
+  /* Utilise 100% de la largeur disponible */
+  max-width: 400px;
+  /* Limite la largeur maximale */
+  height: auto;
+  /* Garde le ratio d'aspect */
   border-radius: 5px;
   margin-bottom: 10px;
 }
 
 /* Détails de la séance */
 .seance-details {
-  width: 100%; /* Remplit la largeur du conteneur */
+  width: 100%;
+  /* Remplit la largeur du conteneur */
   text-align: center;
 }
 
@@ -1359,7 +1445,8 @@ body, html {
 /* Responsive Design */
 /* Menu Burger */
 .burger-menu {
-  display: none; /* Caché par défaut sur desktop */
+  display: none;
+  /* Caché par défaut sur desktop */
   flex-direction: column;
   cursor: pointer;
 }
@@ -1396,7 +1483,8 @@ body, html {
 }
 
 .burger-menu-links.active {
-  display: flex; /* Affiché lorsqu'il est actif */
+  display: flex;
+  /* Affiché lorsqu'il est actif */
 }
 
 .burger-menu-links a {
@@ -1406,18 +1494,48 @@ body, html {
   text-align: center;
   transition: 0.3s ease;
 }
+
 a {
   text-decoration: none;
   color: #e50914;
 }
+
 .burger-menu-links a:hover {
   background-color: #83050c;
   color: white;
 }
 
-canvas {
-  padding: 21px;
+
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
+
+
+
+
+canvas {
+  width: 100%;
+  /* Le canvas prendra toute la largeur du conteneur */
+  height: auto;
+  /* La hauteur sera automatiquement ajustée en fonction de la largeur */
+  display: block;
+  padding: 12px;
+}
+
+@media (max-width: 768px) {
+  .canva {
+    width: 70%;
+    padding: 25%;
+  }
+
+}
+
+
 
 textarea.description {
   width: 94%;
@@ -1429,9 +1547,35 @@ textarea.description {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 0;
+  /* Correction de l'ancienne valeur de padding */
   background: #1b1b1b;
   flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .contact-page-container {
+    width: 95%;
+  }
+
+
+  .contact-page-form {
+
+    border: transparent;
+  }
+
+
+
+}
+
+@media (max-width: 480px) {
+  .contact-page-container {
+    margin-left: 5px;
+    margin-right: 26px;
+  }
+
+
+
 }
 
 /* Form styling */
@@ -1445,7 +1589,10 @@ textarea.description {
   border: solid 1px whitesmoke;
 }
 
+li.name {
+  color: gold;
 
+}
 
 /* Message */
 .contact-page-message {
@@ -1467,6 +1614,46 @@ textarea.description {
   color: whitesmoke;
 }
 
+@media (max-width: 768px) {
+  .contact-page-label {
+    font-size: 0.95rem;
+    /* Réduit légèrement la taille de la police sur les écrans moyens */
+  }
+
+  .contact-page-form {
+
+    border: solid 1px transparent;
+  }
+
+  .register-container {
+
+    border: solid transparent;
+
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-page-label {
+    font-size: 0.85rem;
+    /* Réduit davantage la taille de la police sur les très petits écrans */
+    margin-bottom: 3px;
+    /* Réduit l'espace sous le label pour mieux gérer l'espace */
+  }
+
+  .contact-page-form {
+
+    border: solid 1px transparent;
+  }
+
+  .register-container {
+
+    border: solid transparent;
+
+  }
+
+}
+
+
 /* Inputs and Textarea */
 .contact-page-input,
 .contact-page-textarea {
@@ -1477,7 +1664,36 @@ textarea.description {
   border-radius: 5px;
   font-size: 1rem;
   background-color: #2a2a2a;
+  color: #fff;
+  /* Ajoute une couleur de texte pour une meilleure visibilité */
 }
+
+@media (max-width: 768px) {
+
+  .contact-page-input,
+  .contact-page-textarea {
+    padding: 8px;
+    /* Réduit l'espacement intérieur pour les écrans plus petits */
+    font-size: 0.95rem;
+    /* Réduit légèrement la taille de la police */
+    width: 90%;
+    /* Augmente la largeur pour les petits écrans */
+  }
+}
+
+@media (max-width: 480px) {
+
+  .contact-page-input,
+  .contact-page-textarea {
+    padding: 6px;
+    /* Réduit encore l'espacement pour les très petits écrans */
+    font-size: 0.85rem;
+    /* Réduit la taille de la police pour les très petits écrans */
+    width: 100%;
+    /* Utilise toute la largeur disponible sur les petits écrans */
+  }
+}
+
 
 /* Focus styling */
 .contact-page-input:focus,
@@ -1503,63 +1719,62 @@ textarea.description {
   background: #0056b3;
 }
 
-/* Responsive design for small screens */
-@media (max-width: 600px) {
-  .contact-page-form {
-      padding: 15px;
-  }
-}
+
 /* Navigation responsive */
 @media screen and (max-width: 768px) {
   .burger-menu {
-      display: flex; /* Affiche le burger sur mobile */
+    display: flex;
+    /* Affiche le burger sur mobile */
   }
 
   .nav-links {
-      display: none; /* Cache les liens principaux sur mobile */
+    display: none;
+    /* Cache les liens principaux sur mobile */
   }
 
   .burger-menu-links {
-      display: none; /* Cache le menu burger par défaut */
+    display: none;
+    /* Cache le menu burger par défaut */
   }
 
   .burger-menu-links.active {
-      display: flex; /* Affiche le menu burger lorsqu'il est actif */
+    display: flex;
+    /* Affiche le menu burger lorsqu'il est actif */
   }
 }
 
 /* Écrans < 768px (tablettes et téléphones) */
 @media screen and (max-width: 768px) {
   .mobile-container {
-      padding: 5px;
+    padding: 5px;
   }
 
   .seance-item {
-      padding: 8px;
+    padding: 8px;
   }
 
   .film-affiche {
-      width: 100%;
-      max-width: 100%;
+    width: 100%;
+    max-width: 100%;
   }
 
   .seance-details h3 {
-      font-size: 16px;
+    font-size: 16px;
   }
 
   .seance-details p {
-      font-size: 12px;
+    font-size: 12px;
   }
 }
 
 /* Écrans très petits < 480px */
 @media screen and (max-width: 480px) {
   .seance-details h3 {
-      font-size: 14px;
+    font-size: 14px;
   }
 
   .seance-details p {
-      font-size: 12px;
+    font-size: 12px;
   }
 }
 

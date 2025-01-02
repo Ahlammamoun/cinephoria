@@ -503,7 +503,7 @@ class AdminAddController extends AbstractController
         }
 
         // Calculer la date 7 jours avant aujourd'hui
-        $startDate = new \DateTime('-7 days');
+        $startDate = new \DateTime('-354 days');
         $endDate = new \DateTime('now');
 
         // Récupérer les statistiques des réservations

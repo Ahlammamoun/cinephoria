@@ -8,8 +8,8 @@ const Dashboard = () => {
     // Référence au canvas pour dessiner
     const canvasRef = useRef(null);
 
+    // Fonction pour charger les données depuis l'API
     useEffect(() => {
-        // Fonction pour charger les données depuis l'API
         const fetchData = async () => {
             try {
                 const response = await fetch("http://localhost:8000/api/admin/reservations-stats");
@@ -47,7 +47,7 @@ const Dashboard = () => {
         const values = data.map((item) => item.reservations); // Réservations
 
         // Paramètres du graphique
-        const barWidth = 40;
+        const barWidth = Math.max(40, width / (values.length * 2)); // Ajuste la largeur des barres
         const barSpacing = 30;
         const padding = 70; // Espace pour les axes et labels
         const chartHeight = height - 50 - padding;
@@ -73,7 +73,7 @@ const Dashboard = () => {
         // Dessiner les barres
         values.forEach((value, index) => {
             const barHeight = value * scaleFactor;
-            const x = padding + index * (barWidth + barSpacing) + 30;;
+            const x = padding + index * (barWidth + barSpacing) + 30;
             const y = chartHeight - barHeight;
 
             // Dessiner la barre
@@ -88,43 +88,57 @@ const Dashboard = () => {
             ctx.fillText(value, x + barWidth / 2, textY);
             // Ajouter le chiffre d'affaires en bas
             const chiffreAffaire = data[index].chiffreAffaire ?? 0; // Défaut à 0
-            ctx.fillStyle = "red"; // Mettre la couleur en rouge
+            ctx.fillStyle = "green"; // Mettre la couleur en rouge
+            ctx.font = "18px Arial"; // Police
             ctx.fillText(`€${chiffreAffaire.toFixed(2)}`, x + barWidth / 2, height - 0);
             // Afficher les labels (rotation pour éviter le chevauchement)
             ctx.save();
             ctx.translate(x + barWidth / 2, chartHeight + 10);
             ctx.rotate(-Math.PI / 4); // Rotation de -45 degrés
             ctx.textAlign = "right";
+            ctx.fillStyle = "red"; 
             ctx.fillText(labels[index], 0, 0);
             ctx.restore();
-
 
             const totalChiffreAffaire = data.reduce(
                 (sum, item) => sum + (item.chiffreAffaire ?? 0),
                 0
             );
               
-              // Affichage du total EN HAUT
-              ctx.fillStyle = "red"; // Couleur blanche
-              ctx.font = "15px Arial"; // Police
-              ctx.textAlign = "center"; // Centré horizontalement
-              ctx.fillText(
-                `Total Chiffre d'Affaires : €${totalChiffreAffaire.toFixed(2)}`,
-                width / 2, // Centrage horizontal
+            // Affichage du total EN HAUT
+            ctx.fillStyle = "green"; // Couleur blanche
+            ctx.font = "18px Arial"; // Police
+            ctx.textAlign = "center"; // Centré horizontalement
+            ctx.fillText(
+                `C.A :💰€${totalChiffreAffaire.toFixed(2)}💰`,
+                width / 2,// Centrage horizontal
                 20 // Position verticale en haut (ajuster si besoin)
             );
-            
-
         });
     };
 
-
-    // Appeler drawChart lorsque les données sont disponibles
+    // Appeler drawChart lorsque les données sont disponibles et redimensionner le canvas
     useEffect(() => {
-        if (data.length > 0) {
-            drawChart();
-        }
+        const handleResize = () => {
+            const canvas = canvasRef.current;
+            if (canvas) {
+                canvas.width = window.innerWidth * 0.9; // Ajuster la largeur à 90% de la fenêtre
+                drawChart(); // Redessiner le graphique après redimensionnement
+            }
+        };
+    
+        // Appel initial pour redimensionner à la taille de la fenêtre
+        handleResize();
+    
+        // Écouter l'événement de redimensionnement
+        window.addEventListener('resize', handleResize);
+    
+        // Nettoyer l'écouteur lors du démontage du composant
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, [data]);
+    
 
     return (
         <div className="dashboard-container">
@@ -132,8 +146,8 @@ const Dashboard = () => {
             {loading && <p>Chargement des données...</p>}
             {error && <p className="error">{error}</p>}
             {!loading && !error && (
-                <div>
-                    <canvas ref={canvasRef} width={800} height={400}></canvas>
+                <div className="canva">
+                    <canvas ref={canvasRef} height={400}></canvas>
                 </div>
             )}
         </div>
@@ -141,3 +155,4 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+

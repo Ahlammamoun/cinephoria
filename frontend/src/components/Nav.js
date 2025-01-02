@@ -32,8 +32,8 @@ const Navbar = () => {
             <ul className="nav-links">
                 {user ? (
                     <>
-                    <li className="name">👤</li>
-                        <li> {user.prenom} {user.nom} </li>
+              
+                        <li className="name">Welcolme {user.prenom} {user.nom} </li>
                         <li>
                             <a href="#" className="logout-link" onClick={logout}>Logout</a>
                         </li>
