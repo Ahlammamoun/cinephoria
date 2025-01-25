@@ -6,9 +6,8 @@ nelmio_cors:
         allow_headers: ['Content-Type', 'Authorization']
         expose_headers: []
         max_age: 3600
-        hosts: ['^127\.0\.0\.1:\d+$', '^localhost:\d+$']
+        hosts: ['^127\.0\.0\.1:\d+$', '^localhost:\d+$', '^192\.168\.\d+\.\d+:\d+$']  # Ajoutez l'IP de votre machine
     paths:
         '^/api/':
-            allow_origin: ['http://localhost:3001', 'http://127.0.0.1:3001']
-
+            allow_origin: ['*']
 
