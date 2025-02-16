@@ -7,7 +7,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: cinephoria
-      MYSQL_USER: cinephoria
+      MYSQL_USER: cinephoria123
       MYSQL_PASSWORD: cinephoria
     ports:
       - "3306:3306"

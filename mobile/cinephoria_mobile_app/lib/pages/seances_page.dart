@@ -1,20 +1,12 @@
-import 'package:flutter/material.dart'; 
-import '../ models/seance.dart';  // Fixed extra space before 'models'
-import '../services/api_service.dart';  // Fixed extra space before 'services'
-import ' qr_code_page.dart';  // Fixed extra space before 'qr_code_page.dart'
+import 'package:flutter/material.dart';
+import 'package:cinephoria_mobile_app/services/api_service.dart';  // Importer le service ApiService
+import 'package:cinephoria_mobile_app/models/seance.dart';  // Importer le modèle Seance
 
-class SeancesPage extends StatefulWidget {
-  @override
-  _SeancesPageState createState() => _SeancesPageState();
-}
-
-class _SeancesPageState extends State<SeancesPage> {
-  late Future<List<Seance>> seances;
-
-  @override
-  void initState() {
-    super.initState();
-    seances = ApiService().fetchSeances();
+class SeancesPage extends StatelessWidget {
+  // Méthode pour récupérer les séances via ApiService
+  Future<List<Seance>> _fetchSeances() async {
+    final apiService = ApiService();
+    return await apiService.fetchSeances();
   }
 
   @override
@@ -24,32 +16,25 @@ class _SeancesPageState extends State<SeancesPage> {
         title: Text('Séances du Jour'),
       ),
       body: FutureBuilder<List<Seance>>(
-        future: seances,
+        future: _fetchSeances(),  // Appel de la méthode pour récupérer les séances
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return Center(child: CircularProgressIndicator());  // Afficher un indicateur de chargement
           } else if (snapshot.hasError) {
-            return Center(child: Text('Erreur: ${snapshot.error}'));
+            return Center(child: Text('Erreur : ${snapshot.error}'));  // Afficher l'erreur
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('Aucune séance disponible.'));
+            return Center(child: Text('Aucune séance disponible.'));  // Si aucune séance
           } else {
-            List<Seance> seancesData = snapshot.data!;
+            // Si les séances sont récupérées, on les affiche
+            List<Seance> seances = snapshot.data!;
             return ListView.builder(
-              itemCount: seancesData.length,
+              itemCount: seances.length,
               itemBuilder: (context, index) {
-                final seance = seancesData[index];
+                final seance = seances[index];
                 return ListTile(
-                  leading: Image.network(seance.affiche),  // Ensure `affiche` exists in Seance class
-                  title: Text(seance.nomFilm),  // Ensure `nomFilm` exists in Seance class
-                  subtitle: Text('${seance.jour} - ${seance.heureDebut}'),  // Ensure `jour` and `heureDebut` exist in Seance class
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => QrCodePage(billetId: seance.nomFilm),
-                      ),
-                    );
-                  },
+                  title: Text(seance.nomFilm),  // Affiche le nom du film
+                  subtitle: Text('${seance.jour} à ${seance.heureDebut}'),  // Affiche le jour et l'heure
+                  leading: Image.network(seance.affiche),  // Affiche l'affiche du film
                 );
               },
             );
