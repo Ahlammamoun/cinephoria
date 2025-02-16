@@ -1,49 +1,56 @@
-version: "3.8"
+
 
 services:
-  backend:
-    build:
-      context: ./backend
-    container_name: symfony-backend
-    volumes:
-      - ./backend:/var/www/html
-    ports:
-      - "9000:9000" # Liaison explicite pour Symfony
-    expose:
-      - "9000"
-    depends_on:
-      - db
-
-  frontend:
-    build:
-      context: ./frontend
-    container_name: react-frontend
-    ports:
-      - "3000:80"
-
   db:
-    image: mysql:8
+    image: mysql:8.0
     container_name: mysql-db
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: cinephoria
-      MYSQL_USER: cinephoria
+      MYSQL_USER: cinephoria123
       MYSQL_PASSWORD: cinephoria
     ports:
       - "3306:3306"
     volumes:
-      - db-data:/var/lib/mysql
+      - mysql-data:/var/lib/mysql
+
+
+  react-frontend:
+    build:
+      context: ./frontend
+    container_name: react-frontend
+    ports:
+      - "3000:3000"
+    working_dir: /usr/src/app
+    command: npm start  
+      
+
+  symfony-backend:
+    build:
+      context: ./backend
+    container_name: symfony-backend
+    environment:
+      DATABASE_URL: "mysql://cinephoria:cinephoria@mysql-db:3306/cinephoria?serverVersion=8.0.31&charset=utf8mb4"
+    volumes:
+      - ./backend:/var/www/html
+    ports:
+      - "9000:9000"
+    command: php -S 0.0.0.0:9000 -t public
 
   nginx:
     image: nginx:latest
     container_name: symfony-nginx
     ports:
       - "8000:80"
-    volumes:
-      - ./backend/public:/var/www/html/public
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
-      - backend
+      - symfony-backend
+      - react-frontend
+    volumes:
+      # On monte le fichier default.conf créé précédemment
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+  
+
 
 volumes:
-  db-data:
+  mysql-data:
+
