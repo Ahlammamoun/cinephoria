@@ -39,7 +39,8 @@ Voici la structure du projet :
 
 ## 1. Cloner le repository
 
-Commande Bash : git clone https://votre-repository.git
+Commande Bash : git clone  https://github.com/Ahlammamoun/cinephoria.git
+
 cd cinephoria
 
 ## 2. Construire les conteneurs Docker
@@ -68,7 +69,42 @@ Vous pouvez également exécuter les tests fonctionnels et unitaires via PHPUnit
 - **./vendor/bin/phpunit**  
 
 
-## 6. Docker Dashboard
+## 6. Tester les app bureautique et mobile avec electron et flutter
+
+● Se déplacer sur la branch develop
+ git checkout develop
+
+● Lancer les containers Docker
+ Se placer à la racine est lancer la commande
+
+ docker-compose up --build
+
+● Accéder au server local
+
+ http://localhost:8000
+
+● Tester l'application bureautique avec Electron
+ se placer dans le répertoire frontend
+
+ cd frontend
+
+ lancer l’application
+
+npm install
+npm run electron
+
+● Tester l'application mobile avec Flutter
+ se placer dans ce répertoire
+
+ cd mobile/cinephoria_app_mobile
+
+ lancer l’application
+ 
+ flutter run
+
+
+
+## 7. Docker Dashboard
 
 Vous pouvez également suivre l'état de vos conteneurs en utilisant le tableau de bord Docker. Voici un exemple de tableau de bord avec les conteneurs en cours d'exécution :
 Le conteneur Cinephoria contient tous les services liés à l'application, y compris symfony-backend, symfony-nginx, react-frontend et mysql-db.

@@ -1,17 +1,21 @@
 nelmio_cors:
     defaults:
-        allow_origin: ['*']
-        allow_credentials: true
-        allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
-        allow_headers: ['Content-Type', 'Authorization']
-        expose_headers: []
-        max_age: 3600
+        allow_origin: ['*']  # Autoriser toutes les origines, ou spécifiez 'http://localhost:46623' si vous voulez limiter à cette origine.
+        allow_credentials: true  # Autoriser l'envoi de cookies ou d'informations d'identification
+        allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']  # Méthodes autorisées
+        allow_headers: ['Content-Type', 'Authorization']  # En-têtes autorisés
+        expose_headers: []  # Exposer des en-têtes supplémentaires si nécessaire
+        max_age: 3600  # Durée de vie de la pré-vol (OPTIONS)
         hosts:
             - '^127\.0\.0\.1:\d+$'
             - '^localhost:\d+$'
             - '^192\.168\.\d+\.\d+:\d+$'
-            - '^57\.129\.134\.59:\d+$'  # Ajoutez l'IP de votre machine
+            - '^57\.129\.134\.59:\d+$'  # Ajouter l'IP de votre machine, ajustez si nécessaire
     paths:
-        '^/api/':
-            allow_origin: ['*']
+        '^/api/':  # Applique la configuration CORS pour toutes les routes de l'API
+            allow_origin: ['*']  # Autoriser toutes les origines pour l'API
+            allow_credentials: true
+            allow_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+            allow_headers: ['Content-Type', 'Authorization']
+
 

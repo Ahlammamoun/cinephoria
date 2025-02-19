@@ -307,6 +307,7 @@ class ReservationController extends AbstractController
 
 
 
+
     #[Route('/api/commandes/{id}/note', name: 'api_commandes_note', methods: ['POST'])]
     public function rateMovie(
         int $id,
